@@ -6,9 +6,10 @@ App with courses for practicing the learning of instruments with actual songs.
 When learning anything, the most important thing is practice. As for being a musician, there are already many courses and platforms to learn the theory. But when it comes to reinforce that learning with practice, the courses often don't include real songs, and if they do, sometimes the user doesn't like the songs included. With The Musician's Path, you can pick a course with a list of songs you like, or create one of your preference.
 
 Example: "The Beatles' begginers course"
-- Norwegian Wood
-- I want to hold your hand
-- ...
+"Course with songs from beginner to advance to practice with Beatles songs"
+1. Norwegian Wood - Difficulty: 3/10
+2. I want to hold your hand - Difficulty: 5/10
+3. Hey Jude - Difficulty: 8/10
 
 ## Who is this application for?
 This application is for musicians of any level that already have some theoretical fundaments, but want to level up their skills by practicing with real songs.
@@ -75,7 +76,6 @@ erDiagram
         varchar course_id fk
         varchar song_id fk
         int order
-        tinyint is_completed
         int added_by fk
         tinyint is_approved
     }
