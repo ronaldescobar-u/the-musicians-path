@@ -3,7 +3,7 @@
 App with courses for practicing the learning of instruments with actual songs.
 
 ## Problem definition
-When learning anything, the most important thing is practice. As for being a musician, there are already many courses and platforms to learn the theory. But when it comes to reinforce that learning with practice, the courses often don't include real songs because of copyright, or often the user doesn't like the songs included. With The Musician's Path, you can pick a course with a list of songs you like, or create one of your preference.
+When learning anything, the most important thing is practice. As for being a musician, there are already many courses and platforms to learn the theory. But when it comes to reinforce that learning with practice, the courses often don't include real songs, and if they do, sometimes the user doesn't like the songs included. With The Musician's Path, you can pick a course with a list of songs you like, or create one of your preference.
 
 Example: "The Beatles' begginers course"
 - Norwegian Wood
