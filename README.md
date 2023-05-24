@@ -40,7 +40,8 @@ erDiagram
         int id pk
         int user_id fk
         int course_id fk
-        date_time enrollment_date
+        datetime enrollment_date
+        int songs_completed
 
     }
     course ||--|{ course_song : contains
