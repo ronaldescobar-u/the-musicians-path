@@ -16,20 +16,23 @@ This application is for musicians of any level that already have some theoretica
 
 ## MOSCOW
 ### Must have
-- User can create an account
+- User can create an account and login
 - User can enroll to existant course
-- User can create new songs
-- User can create a course
+- User can create/edit/delete songs
+- User can create/edit/delete a course
 - User can add/remove songs from their own course
 ### Should have
 - User can add rating to course
-- User can add comment to song
+- User can add/edit/delete comment to song
 ### Could have
-- Support for files instead of/along with plain text tabs
+- Ability to upload files besides plain text tab for a song
+- Ability to add a YouTube link for a song
+- Ability to download added files and open YouTube link
 - Course owner can accept or reject other users' song request to course
 ### Will not have
-- Multiple files per song
-- If file is a video, video player
+- If file is a video, show a video player
+- If file is a PDF, show preview
+- If file is YouTube link, show it embedded instead of opening apart.
 
 ## Domain model diagram
 ```mermaid
@@ -60,8 +63,6 @@ erDiagram
         int user_id fk
         int course_id fk
         datetime enrollment_date
-        int songs_completed
-
     }
     course ||--|{ course_song : contains
     user ||--|{ song : creates
@@ -69,7 +70,15 @@ erDiagram
         int id pk
         varchar name
         varchar description
-        int created_by fk
+        int added_by fk
+    }
+    user }|--|| student_completed_course_song : is
+    student_completed_course_song }|--|| course_song : is
+    student_completed_course_song {
+        int id pk
+        int user_id fk
+        int course_song_id fk
+        datetime date_completed
     }
     course_song }|--|| song : is
     course_song {
@@ -84,18 +93,38 @@ erDiagram
     song {
         int id pk
         varchar name
-        varchar artist
-        varchar genre
-        text tab
-        varchar fileKey
+        int artist_id fk
+        int genre_id fk
         difficulty int
         int added_by fk
+    }
+    song }|--|| genre : "has"
+    genre {
+        int id pk
+        varchar name
     }
     comment {
         int id pk
         int song_id fk
         int user_id fk
         varchar text
+    }
+    song }|--|| artist : "has"
+    artist {
+        int id pk
+        varchar name
+    }
+    song }|--|| song_file : "has"
+    song_file {
+        int id pk
+        int song_id fk
+        int file_type_id fk
+        varchar value
+    }
+    song_file }|--|| file_type : "has"
+    file_type {
+        int id pk
+        varchar type
     }
     user ||--|{ comment : creates
     user ||--|{ course : creates
