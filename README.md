@@ -35,6 +35,7 @@ This application is for musicians of any level that already have some theoretica
 ```mermaid
 erDiagram
     USER ||--o{ COURSE : "enrolls to"
+    USER ||--o{ SONG : "creates"
     COURSE ||--|{ SONG : contains
     SONG ||--o{ COMMENT : "has"
     USER ||--o{ COMMENT : creates
