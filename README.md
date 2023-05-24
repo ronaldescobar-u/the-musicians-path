@@ -13,6 +13,23 @@ Example: "The Beatles' begginers course"
 ## Who is this application for?
 This application is for musicians of any level that already have some theoretical fundaments, but want to level up their skills by practicing with real songs.
 
+## MOSCOW
+### Must have
+- User can create an account
+- User can enroll to existant course
+- User can create new songs
+- User can create a course
+- User can add/remove songs from their own course
+### Should have
+- User can add rating to course
+- User can add comment to song
+### Could have
+- Support for files instead of/along with plain text tabs
+- Course owner can accept or reject other users' song request to course
+### Will not have
+- Multiple files per song
+- If file is a video, video player
+
 ## Domain model diagram
 ```mermaid
 erDiagram
@@ -90,19 +107,3 @@ erDiagram
     }
     user ||--|{ rating : submits
 ```
-## MOSCOW
-### Must have
-- User can create an account
-- User can enroll to existant course
-- User can create new songs
-- User can create a course
-- User can add/remove songs from their own course
-### Should have
-- User can add rating to course
-- User can add comment to song
-### Could have
-- Support for files instead of/along with plain text tabs
-- Course owner can accept or reject other users' song request to course
-### Will not have
-- Multiple files per song
-- If file is a video, video player
