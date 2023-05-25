@@ -49,7 +49,7 @@ erDiagram
 ## Entity relation diagram
 ```mermaid
 erDiagram
-    user ||--|{ course_student : "is"
+    user ||--|{ course_user : "is"
     user {
         int id pk
         varchar firstname
@@ -57,8 +57,8 @@ erDiagram
         varchar email
         varchar password
     }
-    course_student  }|--|| course : "belongs to"
-    course_student {
+    course_user  }|--|| course : "belongs to"
+    course_user {
         int id pk
         int user_id fk
         int course_id fk
@@ -72,9 +72,9 @@ erDiagram
         varchar description
         int added_by fk
     }
-    user }|--|| student_completed_course_song : is
-    student_completed_course_song }|--|| course_song : is
-    student_completed_course_song {
+    user }|--|| user_course_song : is
+    user_course_song }|--|| course_song : is
+    user_course_song {
         int id pk
         int user_id fk
         int course_song_id fk
