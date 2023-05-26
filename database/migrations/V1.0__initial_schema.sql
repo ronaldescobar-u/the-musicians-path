@@ -1,6 +1,6 @@
 CREATE TABLE public.genre (
 	id serial NOT NULL,
-	"name" varchar NOT NULL
+	"name" varchar NOT NULL,
     CONSTRAINT genre_pk PRIMARY KEY (id)
 );
 
