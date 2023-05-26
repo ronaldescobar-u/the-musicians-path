@@ -274,6 +274,29 @@ Request:
 ```
 Response: `201 Created`
 
+`POST /courses/:id/users`
+##### Enrolls a user to a course
+Request:
+```json
+{
+  "userId": 1,
+  "enrollmentDate": "2023-05-26",
+}
+```
+Response: `201 Created`
+
+`POST /courses/:id/songs`
+##### Adds a song to a course
+Request:
+```json
+{
+  "songId": 1,
+  "order": 2,
+  "addedBy": 1,
+}
+```
+Response: `201 Created`
+
 ### Songs
 `GET /songs?artistid=1&genreid=1&searchquery=strawberry`
 ##### Returns a list of songs filtered by search query, artistId or genreId
