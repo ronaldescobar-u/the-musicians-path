@@ -134,6 +134,264 @@ erDiagram
         int course_id fk
         int user_id fk
         int stars
+        varchar text
     }
     user ||--|{ rating : submits
 ```
+
+## API Specifications
+### Users
+`POST /users`
+##### Creates a user
+Request
+```json
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "johndoe@email.com",
+  "password": "Password",
+}
+```
+Response: `201 Created`
+
+### Courses
+`GET /courses?searchquery=beatles`
+##### Returns a list of courses optionally filtered by search query
+Response: `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "name": "The Beatles: Begginer's Path",
+    "description": "Only easy songs to play by The Beatles",
+    "addedBy": 1,
+  },
+  {
+    "id": 2,
+    "name": "80's Classics - From Beginner to Advanced",
+    "description": "All 80s songs starting from easy ones going through tough ones at the end",
+    "addedBy": 1,
+  }
+]
+```
+
+`GET /courses/:id`
+##### Returns a course by id
+Response: `200 OK`
+```json
+{
+  "id": 1,
+  "name": "The Beatles: Begginer's Path",
+  "description": "Only easy songs to play by The Beatles",
+  "addedBy": 1,
+  "averageRating": 4.5,
+  "songs": [
+    {
+      "id": 1,
+      "name": "I want to hold your hand",
+      "artist": "The Beatles",
+      "genre": "Rock",
+      "difficulty": 3,
+      "addedBy": "John Doe",
+    },
+    {
+      "id": 2,
+      "name": "Penny Lane",
+      "artist": "The Beatles",
+      "genre": "Rock",
+      "difficulty": 5,
+      "addedBy": "John Doe",
+    }
+  ]
+}
+```
+
+`POST /courses`
+##### Creates a course
+Request:
+```json
+{
+  "name": "The Beatles' Begginer's Path",
+  "description": "Only easy songs to play by The Beatles",
+  "addedBy": 1,
+}
+```
+Response: `201 Created`
+
+`PUT /courses/:id`
+##### Updates a course by id
+Request:
+```json
+{
+  "name": "The Beatles' Begginer's Path",
+  "description": "Only easy songs to play by The Beatles",
+}
+```
+Response: `200 OK`
+
+`DELETE /courses/:id`
+##### Deletes a course by id
+Response: `200 OK`
+
+`GET /courses/:id/ratings`
+##### Get all ratings from a course
+Response: `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "user": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "johndoe@email.com",
+    },
+    "stars": 5,
+    "text": "Amazing course!"
+  },
+  {
+    "id": 2,
+    "user": {
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "email": "janedoe@email.com",
+    },
+    "stars": 3,
+    "text": null
+  },
+]
+```
+
+`POST /courses/:id/ratings`
+##### Submits a rating for a course
+Request:
+```json
+{
+  "id": 1,
+  "addedBy": 1,
+  "stars": 5,
+  "text": "Amazing course!"
+}
+```
+Response: `201 Created`
+
+### Songs
+`GET /songs?artistid=1&genreid=1&searchquery=strawberry`
+##### Returns a list of songs filtered by search query, artistId or genreId
+Response: `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "name": "I want to hold your hand",
+    "artist": "The Beatles",
+    "genre": "Rock",
+    "difficulty": 3,
+    "addedBy": "John Doe",
+  },
+  {
+    "id": 2,
+    "name": "Penny Lane",
+    "artist": "The Beatles",
+    "genre": "Rock",
+    "difficulty": 5,
+    "addedBy": "John Doe",
+  }
+]
+```
+
+`GET /songs/:id`
+##### Returns a song by id
+Response: `200 OK`
+```json
+{
+  "id": 2,
+  "name": "I want to hold your hand",
+  "artist": "The Beatles",
+  "genre": "Rock",
+  "difficulty": 3,
+  "addedBy": 1,
+  "songFiles": [
+    {
+      "fileTypeId": 1,
+      "fileType": "Plain text tab",
+      "content": "..."
+    },
+    {
+      "fileTypeId": 2,
+      "fileType": "YouTube Link",
+      "content": "https://www.youtube.com/"
+    },
+  ]
+}
+```
+
+`POST /song`
+##### Creates a song
+Request:
+```json
+{
+  "id": 1,
+  "name": "Penny Lane",
+  "artistId": 1,
+  "genreId": 1,
+  "difficulty": 5,
+  "addedBy": 1,
+}
+```
+Response: `201 Created`
+
+`PUT /song/:id`
+##### Updates a song by id
+Request:
+```json
+{
+  "name": "Penny Lane",
+  "artistId": 1,
+  "genreId": 1,
+  "difficulty": 5,
+}
+```
+Response: `200 OK`
+
+`DELETE /songs/:id`
+##### Deletes a song by id
+Response: `200 OK`
+
+`GET /songs/:id/comments`
+##### Get all comments from a song
+Response: `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "user": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "johndoe@email.com",
+    },
+    "text": "I can't play the transition between C and G chords, does anyone have some advice for that?"
+  },
+  {
+    "id": 2,
+    "user": {
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "email": "janedoe@email.com",
+    },
+    "text": "Try playing G in 2nd inversion!"
+  },
+]
+```
+
+`POST /songs/:id/comments`
+##### Submits a rating for a course
+Request:
+```json
+{
+  "id": 1,
+  "addedBy": 1,
+  "stars": 5,
+  "text": "Amazing course!"
+}
+```
+Response: `201 Created`

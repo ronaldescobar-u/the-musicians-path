@@ -29,7 +29,7 @@ CREATE TABLE public.course (
 	id serial NOT NULL,
 	"name" varchar NOT NULL,
 	description varchar NULL,
-	added_by int NOT NULL,
+	added_by integer NOT NULL,
 	CONSTRAINT course_pk PRIMARY KEY (id),
 	CONSTRAINT course_added_by_user_id_fk FOREIGN KEY (added_by) REFERENCES public."user"(id)
 );
