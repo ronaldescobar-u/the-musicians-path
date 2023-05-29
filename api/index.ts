@@ -1,9 +1,10 @@
 import express from 'express';
-import { coursesRouter } from './routers';
+import { coursesRouter, songsRouter } from './routers';
 
 const app = express();
 
 app.use('/courses', coursesRouter);
+app.use('/songs', songsRouter);
 
 const port = 3000;
 
