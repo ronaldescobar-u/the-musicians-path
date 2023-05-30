@@ -359,6 +359,16 @@ Request:
   "genreId": 1,
   "difficulty": 5,
   "addedBy": 1,
+  "files": [
+    {
+      "fileTypeId": 1,
+      "value": "C G Bm D"
+    },
+    {
+      "fileTypeId": 2,
+      "value": "https://www.youtube.com"
+    },
+  ]
 }
 ```
 Response: `201 Created`
@@ -417,6 +427,70 @@ Request:
 ```
 Response: `201 Created`
 
+`POST /songs/:id/files`
+##### Add a file to a song
+Request:
+```json
+{
+  "fileTypeId": 1,
+  "value": "C D Gm B"
+}
+```
+Response: `201 Created`
+
+### File types
+`GET /file_types`
+##### Get all file types
+Response: `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "type": "Plain text tab"
+  },
+  {
+    "id": 2,
+    "type": "YouTube link"
+  }
+]
+```
+
+### Genres
+`GET /genres`
+##### Get all genres
+Response: `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "name": "Rock"
+  },
+  {
+    "id": 2,
+    "name": "Pop"
+  }
+]
+```
+
+### Artists
+`GET /artists`
+##### Get all artists
+Response: `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "name": "The Beatles"
+  },
+  {
+    "id": 2,
+    "name": "Kendrick Lamar"
+  }
+]
+```
 //complete song of course
 //login
-//upload songfile
+//upload songfile and remove songfile
+//`DELETE /songs/:id/files`
+//##### Remove file from a song
+//Response: `200 OK`
