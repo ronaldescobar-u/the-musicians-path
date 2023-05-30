@@ -392,7 +392,7 @@ Response: `200 OK`
       "lastName": "Doe",
       "email": "johndoe@email.com",
     },
-    "text": "I can't play the transition between C and G chords, does anyone have some advice for that?"
+    "text": "I can't play the transition between C and G chords. Any advice?"
   },
   {
     "id": 2,
@@ -407,14 +407,16 @@ Response: `200 OK`
 ```
 
 `POST /songs/:id/comments`
-##### Submits a rating for a course
+##### Posts a comment for a song
 Request:
 ```json
 {
-  "id": 1,
   "addedBy": 1,
-  "stars": 5,
-  "text": "Amazing course!"
+  "text": "I can't play the transition between C and G chords. Any advice?"
 }
 ```
 Response: `201 Created`
+
+//complete song of course
+//login
+//upload songfile
