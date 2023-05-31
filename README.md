@@ -266,7 +266,6 @@ Response: `200 OK`
 Request:
 ```json
 {
-  "id": 1,
   "addedBy": 1,
   "stars": 5,
   "text": "Amazing course!"

@@ -45,6 +45,11 @@ coursesRouter.route('/').get((request: Request<{}, {}, {}, { searchQuery: string
 *     tags: [
 *        courses
 *     ]
+*     parameters:
+*       - name: id
+*         in: path
+*         type: integer
+*         description: Id of the course to get
 *     responses:
 *       200:
 *         description: OK
@@ -91,20 +96,111 @@ coursesRouter.route('/:id').get((request: Request<{ id: number }>, response) => 
   response.send(`Get courses. Path param: ${request.params.id}`);
 });
 
+/**
+* @openapi
+* /courses:
+*   post:
+*     tags: [
+*        courses
+*     ]
+*     requestBody:
+*         content:
+*             application/json:
+*                 schema:
+*                     type: object
+*                     required:
+*                         - name
+*                         - addedBy
+*                     properties:
+*                         name:
+*                             type: string
+*                         description:
+*                             type: string
+*                         addedBy:
+*                             type: number
+*     responses:
+*       201:
+*         description: Created
+*       401:
+*         description: Unauthorized
+*         content:
+*             application/json:
+*                 examples:
+*                     jsonObject:
+*                         summary: An example JSON response
+*                         value: '{ "message": "Unauthorized" }'
+*
+*/
 coursesRouter.route('/').post((request, response) => {
   response.send(`Create course. Body: ${request.body}`);
 });
 
+/**
+* @openapi
+* /courses/{id}:
+*   put:
+*     tags: [
+*        courses
+*     ]
+*     parameters:
+*       - name: id
+*         in: path
+*         type: integer
+*         description: Id of the course to update
+*     requestBody:
+*         content:
+*             application/json:
+*                 schema:
+*                     type: object
+*                     required:
+*                         - name
+*                     properties:
+*                         name:
+*                             type: string
+*                         description:
+*                             type: string
+*     responses:
+*       200:
+*         description: OK
+*       401:
+*         description: Unauthorized
+*         content:
+*             application/json:
+*                 examples:
+*                     jsonObject:
+*                         summary: An example JSON response
+*                         value: '{ "message": "Unauthorized" }'
+*/
 coursesRouter.route('/:id').put((request, response) => {
   response.send(`Update course by id. Body: ${request.body}`);
 });
 
+/**
+* @openapi
+* /courses/{id}:
+*   delete:
+*     tags: [
+*        courses
+*     ]
+*     parameters:
+*       - name: id
+*         in: path
+*         type: integer
+*         description: Id of the course to delete
+*     responses:
+*       200:
+*         description: OK
+*       401:
+*         description: Unauthorized
+*         content:
+*             application/json:
+*                 examples:
+*                     jsonObject:
+*                         summary: An example JSON response
+*                         value: '{ "message": "Unauthorized" }'
+*/
 coursesRouter.route('/:id').delete((request, response) => {
   response.send(`Delete course by id: ${request.params.id}`);
-});
-
-coursesRouter.route('/:id/ratings').delete((request, response) => {
-  response.send(`Get ratings of course: ${request.params.id}`);
 });
 
 /**
@@ -114,6 +210,11 @@ coursesRouter.route('/:id/ratings').delete((request, response) => {
 *     tags: [
 *        courses
 *     ]
+*     parameters:
+*       - name: id
+*         in: path
+*         type: integer
+*         description: Id of the course to get ratings
 *     responses:
 *       200:
 *         description: OK
@@ -156,14 +257,130 @@ coursesRouter.route('/:id/ratings').get((request, response) => {
   response.send(`Get ratings of course: ${request.params.id}`);
 });
 
+/**
+* @openapi
+* /courses/{id}/ratings:
+*   post:
+*     tags: [
+*        courses
+*     ]
+*     parameters:
+*       - name: id
+*         in: path
+*         type: integer
+*         description: Id of the course to submit rating to
+*     requestBody:
+*         content:
+*             application/json:
+*                 schema:
+*                     type: object
+*                     required:
+*                         - addedBy
+*                         - stars
+*                     properties:
+*                         addedBy:
+*                             type: number
+*                         stars:
+*                             type: number
+*                         text:
+*                             type: string
+*     responses:
+*       201:
+*         description: Created
+*       401:
+*         description: Unauthorized
+*         content:
+*             application/json:
+*                 examples:
+*                     jsonObject:
+*                         summary: An example JSON response
+*                         value: '{ "message": "Unauthorized" }'
+*/
 coursesRouter.route('/:id/ratings').post((request, response) => {
   response.send(`Submit rating for course: ${request.body}`);
 });
 
+/**
+* @openapi
+* /courses/{id}/users:
+*   post:
+*     tags: [
+*        courses
+*     ]
+*     parameters:
+*       - name: id
+*         in: path
+*         type: integer
+*         description: Id of the course to enroll user to
+*     requestBody:
+*         content:
+*             application/json:
+*                 schema:
+*                     type: object
+*                     required:
+*                         - userId
+*                         - enrollmentDate
+*                     properties:
+*                         userId:
+*                             type: number
+*                         enrollmentDate:
+*                             type: string
+*     responses:
+*       201:
+*         description: Created
+*       401:
+*         description: Unauthorized
+*         content:
+*             application/json:
+*                 examples:
+*                     jsonObject:
+*                         summary: An example JSON response
+*                         value: '{ "message": "Unauthorized" }'
+*/
 coursesRouter.route('/:id/users').post((request, response) => {
   response.send(`Enroll user to course: ${request.body}`);
 });
 
+/**
+* @openapi
+* /courses/{id}/songs:
+*   post:
+*     tags: [
+*        courses
+*     ]
+*     parameters:
+*       - name: id
+*         in: path
+*         type: integer
+*         description: Id of the course to add song to
+*     requestBody:
+*         content:
+*             application/json:
+*                 schema:
+*                     type: object
+*                     required:
+*                         - songId
+*                         - order
+*                         - addedBy
+*                     properties:
+*                         songId:
+*                             type: number
+*                         order:
+*                             type: number
+*                         addedBy:
+*                             type: number
+*     responses:
+*       201:
+*         description: Created
+*       401:
+*         description: Unauthorized
+*         content:
+*             application/json:
+*                 examples:
+*                     jsonObject:
+*                         summary: An example JSON response
+*                         value: '{ "message": "Unauthorized" }'
+*/
 coursesRouter.route('/:id/songs').post((request, response) => {
   response.send(`Add song to course: ${request.body}`);
 });
