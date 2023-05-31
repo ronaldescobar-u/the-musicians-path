@@ -352,7 +352,6 @@ Response: `200 OK`
 Request:
 ```json
 {
-  "id": 1,
   "name": "Penny Lane",
   "artistId": 1,
   "genreId": 1,

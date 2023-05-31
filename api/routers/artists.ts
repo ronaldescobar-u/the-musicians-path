@@ -6,27 +6,25 @@ const artistsRouter = Router();
 * /artists:
 *   get:
 *     tags: [
-*        artists
+*       artists
 *     ]
 *     responses:
 *       200:
 *         description: OK
 *         content:
-*             application/json:
-*                 examples:
-*                     jsonObject:
-*                         summary: List of artists
-*                         value: '[
-*                          { "id": 1, "name": "The Beatles"}, { "id": 2, "name": "Taylor Swift" }]'
+*           application/json:
+*             examples:
+*               jsonObject:
+*                 summary: List of artists
+*                 value: '[{ "id": 1, "name": "The Beatles"}, { "id": 2, "name": "Taylor Swift" }]'
 *       401:
 *         description: Unauthorized
 *         content:
-*             application/json:
-*                 examples:
-*                     jsonObject:
-*                         summary: An example JSON response
-*                         value: '{ "message": "Unauthorized" }'
-*
+*           application/json:
+*             examples:
+*               jsonObject:
+*                 summary: An example JSON response
+*                 value: '{ "message": "Unauthorized" }'
  */
 artistsRouter.route('/').get((request, response) => {
   response.send('Get all artists.');

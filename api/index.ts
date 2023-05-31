@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { json, urlencoded } from 'express';
 import { coursesRouter, songsRouter, usersRouter, artistsRouter, genresRouter } from './routers';
 import swaggerUI from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
@@ -24,7 +24,8 @@ const openapiSpecification = swaggerJSDoc({
   apis: ["./routers/*.ts"],
 });
 
-
+app.use(json());
+app.use(urlencoded({ extended: true }));
 
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(openapiSpecification));
 app.use("/swagger.json", (req, res) => res.json(openapiSpecification).status(200));
