@@ -1,0 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model artist {
+  id   Int    @id(map: "artist_pk") @default(autoincrement())
+  name String @db.VarChar
+  song song[]
+}
+
+model comment {
+  id       Int    @id(map: "comment_pk") @default(autoincrement())
+  song_id  Int
+  added_by Int
+  text     String @db.VarChar
+  user     user   @relation(fields: [added_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_added_by_user_id_fk")
+  song     song   @relation(fields: [song_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_song_id_song_id_fk")
+}
+
+model course {
+  id          Int           @id(map: "course_pk") @default(autoincrement())
+  name        String        @db.VarChar
+  description String?       @db.VarChar
+  added_by    Int
+  user        user          @relation(fields: [added_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "course_added_by_user_id_fk")
+  course_song course_song[]
+  course_user course_user[]
+  rating      rating[]
+}
+
+model course_song {
+  id               Int                @id(map: "course_song_pk") @default(autoincrement())
+  course_id        Int
+  song_id          Int
+  order            Int
+  added_by         Int
+  is_approved      Boolean            @default(true)
+  user             user               @relation(fields: [added_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "course_song_added_by_user_id_fk")
+  course           course             @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "course_song_course_id_course_id_fk")
+  song             song               @relation(fields: [song_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "course_song_song_id_song_id_fk")
+  user_course_song user_course_song[]
+
+  @@unique([course_id, song_id])
+}
+
+model course_user {
+  id              Int      @id(map: "course_user_pk") @default(autoincrement())
+  course_id       Int
+  user_id         Int
+  enrollment_date DateTime @db.Date
+  course          course   @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "course_user_course_id_course_id_fk")
+  user            user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "course_user_user_id_user_id_fk")
+
+  @@unique([course_id, user_id])
+}
+
+model file_type {
+  id        Int         @id(map: "file_type_pk") @default(autoincrement())
+  type      String      @db.VarChar
+  song_file song_file[]
+}
+
+model flyway_schema_history {
+  installed_rank Int      @id(map: "flyway_schema_history_pk")
+  version        String?  @db.VarChar(50)
+  description    String   @db.VarChar(200)
+  type           String   @db.VarChar(20)
+  script         String   @db.VarChar(1000)
+  checksum       Int?
+  installed_by   String   @db.VarChar(100)
+  installed_on   DateTime @default(now()) @db.Timestamp(6)
+  execution_time Int
+  success        Boolean
+
+  @@index([success], map: "flyway_schema_history_s_idx")
+}
+
+model genre {
+  id   Int    @id(map: "genre_pk") @default(autoincrement())
+  name String @db.VarChar
+  song song[]
+}
+
+model rating {
+  id        Int     @id(map: "rating_pk") @default(autoincrement())
+  course_id Int
+  added_by  Int
+  stars     Float   @db.Real
+  text      String? @db.VarChar
+  user      user    @relation(fields: [added_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "rating_added_by_user_id_fk")
+  course    course  @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "rating_course_id_course_id_fk")
+}
+
+model song {
+  id          Int           @id(map: "song_pk") @default(autoincrement())
+  name        String        @db.VarChar
+  artist_id   Int
+  genre_id    Int
+  difficulty  Int
+  added_by    Int
+  comment     comment[]
+  course_song course_song[]
+  user        user          @relation(fields: [added_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "song_added_by_user_id_fk")
+  artist      artist        @relation(fields: [artist_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "song_artist_id_artist_id_fk")
+  genre       genre         @relation(fields: [genre_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "song_genre_id_genre_id_fk")
+  song_file   song_file[]
+}
+
+model song_file {
+  id           Int       @id(map: "song_file_pk") @default(autoincrement())
+  song_id      Int
+  file_type_id Int
+  value        String
+  file_type    file_type @relation(fields: [file_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "song_file_file_type_id_file_type_id_fk")
+  song         song      @relation(fields: [song_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "song_file_song_id_song_id_fk")
+}
+
+model user {
+  id               Int                @id(map: "user_pk") @default(autoincrement())
+  first_name       String             @db.VarChar
+  last_name        String             @db.VarChar
+  email            String             @unique @db.VarChar
+  password         String             @db.VarChar
+  comment          comment[]
+  course           course[]
+  course_song      course_song[]
+  course_user      course_user[]
+  rating           rating[]
+  song             song[]
+  user_course_song user_course_song[]
+}
+
+model user_course_song {
+  id                 Int         @id(map: "user_course_song_pk") @default(autoincrement())
+  user_id            Int
+  course_song_id     Int
+  datetime_completed DateTime    @db.Timestamp(6)
+  course_song        course_song @relation(fields: [course_song_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_course_song_course_song_id_course_song_id_fk")
+  user               user        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_course_song_user_id_user_id_fk")
+
+  @@unique([user_id, course_song_id])
+}
