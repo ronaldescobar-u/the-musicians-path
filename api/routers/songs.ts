@@ -1,11 +1,13 @@
 import { Request, Router } from 'express';
+import { body, query } from 'express-validator';
+import validate from '../utils/validation';
 
 const songsRouter = Router();
 
 interface SongsQueryParams {
-    artistId: number;
-    genreId: number;
-    searchQuery: string;
+  artistId: number;
+  genreId: number;
+  searchQuery: string;
 }
 
 /**
@@ -59,9 +61,14 @@ interface SongsQueryParams {
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-songsRouter.route('/').get((request: Request<{}, {}, {}, SongsQueryParams>, response) => {
-  response.send(`Get songs. Query params: ${request.query}`);
-});
+songsRouter.route('/').get(
+  query('artistId').optional().isInt(),
+  query('genreId').optional().isInt(),
+  query('searchQuery').optional(),
+  validate,
+  (request: Request<{}, {}, {}, SongsQueryParams>, response) => {
+    response.send(`Get songs. Query params: ${request.query}`);
+  });
 
 /**
 * @openapi
@@ -110,7 +117,7 @@ songsRouter.route('/').get((request: Request<{}, {}, {}, SongsQueryParams>, resp
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
  */
-songsRouter.route('/:id').get((request: Request<{ id: number }>, response) => {
+songsRouter.route('/:id(\\d+)').get((request: Request<{ id: number }>, response) => {
   response.send(`Get songs. Path param: ${request.params.id}`);
 });
 
@@ -164,9 +171,19 @@ songsRouter.route('/:id').get((request: Request<{ id: number }>, response) => {
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-songsRouter.route('/').post((request, response) => {
-  response.send(`Create songs. Body: ${request.body}`);
-});
+songsRouter.route('/').post(
+  body('name').notEmpty(),
+  body('artistId').notEmpty().isInt(),
+  body('genreId').notEmpty().isInt(),
+  body('difficulty').isInt({ min: 1, max: 10 }),
+  body('addedBy').notEmpty().isInt(),
+  body('files').isArray().isLength({ min: 1 }),
+  body('files.*.fileTypeId').notEmpty().isInt(),
+  body('files.*.value').notEmpty(),
+  validate,
+  (request, response) => {
+    response.send(`Create songs. Body: ${request.body}`);
+  });
 
 /**
 * @openapi
@@ -206,9 +223,10 @@ songsRouter.route('/').post((request, response) => {
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-songsRouter.route('/:id').put((request: Request<{ id: number }>, response) => {
-  response.send(`Update song by id. Body: ${request.body}`);
-});
+songsRouter.route('/:id(\\d+)').put(
+  (request: Request<{ id: number }>, response) => {
+    response.send(`Update song by id. Body: ${request.body}`);
+  });
 
 /**
 * @openapi
@@ -233,7 +251,7 @@ songsRouter.route('/:id').put((request: Request<{ id: number }>, response) => {
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-songsRouter.route('/:id').delete((request: Request<{ id: number }>, response) => {
+songsRouter.route('/:id(\\d+)').delete((request: Request<{ id: number }>, response) => {
   response.send(`Delete song by id: ${request.params.id}`);
 });
 
@@ -284,7 +302,7 @@ songsRouter.route('/:id').delete((request: Request<{ id: number }>, response) =>
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-songsRouter.route('/:id/comments').get((request: Request<{ id: number }>, response) => {
+songsRouter.route('/:id(\\d+)/comments').get((request: Request<{ id: number }>, response) => {
   response.send(`Get comments of song. Path param: ${request.params.id}`);
 });
 
@@ -323,8 +341,12 @@ songsRouter.route('/:id/comments').get((request: Request<{ id: number }>, respon
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-songsRouter.route('/:id/comments').post((request: Request<{ id: number }>, response) => {
-  response.send(`Post comment to song. Body: ${request.body}`);
-});
+songsRouter.route('/:id(\\d+)/comments').post(
+  body('addedBy').notEmpty().isInt(),
+  body('text').notEmpty(),
+  validate,
+  (request: Request<{ id: number }>, response) => {
+    response.send(`Post comment to song. Body: ${request.body}`);
+  });
 
 export default songsRouter;

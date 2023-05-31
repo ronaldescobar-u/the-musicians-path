@@ -1,5 +1,5 @@
 import { Request, Router } from 'express';
-import { check } from 'express-validator';
+import { body } from 'express-validator';
 import validate from '../utils/validation';
 
 const usersRouter = Router();
@@ -43,11 +43,13 @@ const usersRouter = Router();
 *                 value: '{ "message": "Unauthorized" }'
 */
 usersRouter.route('/').post(
-  check('email').isEmail(),
-  check('password').isStrongPassword(),
+  body('firstName').notEmpty(),
+  body('lastName').notEmpty(),
+  body('email').notEmpty().isEmail(),
+  body('password').notEmpty().isStrongPassword({ minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 }),
   validate,
   (request, response) => {
-  response.send(`Register user. Body: ${request.body}`);
-});
+    response.send(`Register user. Body: ${request.body}`);
+  });
 
 export default usersRouter;

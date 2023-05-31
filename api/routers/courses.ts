@@ -1,4 +1,6 @@
 import { Request, Router } from 'express';
+import { body } from 'express-validator';
+import validate from '../utils/validation';
 
 const coursesRouter = Router();
 /**
@@ -89,7 +91,7 @@ coursesRouter.route('/').get((request: Request<{}, {}, {}, { searchQuery: string
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
  */
-coursesRouter.route('/:id').get((request: Request<{ id: number }>, response) => {
+coursesRouter.route('/:id(\\d+)').get((request: Request<{ id: number }>, response) => {
   response.send(`Get courses. Path param: ${request.params.id}`);
 });
 
@@ -127,9 +129,13 @@ coursesRouter.route('/:id').get((request: Request<{ id: number }>, response) => 
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-coursesRouter.route('/').post((request, response) => {
-  response.send(`Create course. Body: ${request.body}`);
-});
+coursesRouter.route('/').post(
+  body('name').notEmpty(),
+  body('addedBy').notEmpty().isInt(),
+  validate,
+  (request, response) => {
+    response.send(`Create course. Body: ${request.body}`);
+  });
 
 /**
 * @openapi
@@ -166,7 +172,7 @@ coursesRouter.route('/').post((request, response) => {
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-coursesRouter.route('/:id').put((request, response) => {
+coursesRouter.route('/:id(\\d+)').put((request, response) => {
   response.send(`Update course by id. Body: ${request.body}`);
 });
 
@@ -193,7 +199,7 @@ coursesRouter.route('/:id').put((request, response) => {
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-coursesRouter.route('/:id').delete((request, response) => {
+coursesRouter.route('/:id(\\d+)').delete((request, response) => {
   response.send(`Delete course by id: ${request.params.id}`);
 });
 
@@ -246,7 +252,7 @@ coursesRouter.route('/:id').delete((request, response) => {
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-coursesRouter.route('/:id/ratings').get((request, response) => {
+coursesRouter.route('/:id(\\d+)/ratings').get((request, response) => {
   response.send(`Get ratings of course: ${request.params.id}`);
 });
 
@@ -288,9 +294,13 @@ coursesRouter.route('/:id/ratings').get((request, response) => {
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-coursesRouter.route('/:id/ratings').post((request, response) => {
-  response.send(`Submit rating for course: ${request.body}`);
-});
+coursesRouter.route('/:id(\\d+)/ratings').post(
+  body('addedBy').notEmpty().isInt(),
+  body('stars').notEmpty().isFloat({ min: 0, max: 5 }),
+  validate,
+  (request, response) => {
+    response.send(`Submit rating for course: ${request.body}`);
+  });
 
 /**
 * @openapi
@@ -328,9 +338,13 @@ coursesRouter.route('/:id/ratings').post((request, response) => {
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-coursesRouter.route('/:id/users').post((request, response) => {
-  response.send(`Enroll user to course: ${request.body}`);
-});
+coursesRouter.route('/:id(\\d+)/users').post(
+  body('userId').notEmpty().isInt(),
+  body('enrollmentDate').notEmpty().isDate(),
+  validate,
+  (request, response) => {
+    response.send(`Enroll user to course: ${request.body}`);
+  });
 
 /**
 * @openapi
@@ -371,8 +385,13 @@ coursesRouter.route('/:id/users').post((request, response) => {
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-coursesRouter.route('/:id/songs').post((request, response) => {
-  response.send(`Add song to course: ${request.body}`);
-});
+coursesRouter.route('/:id(\\d+)/songs').post(
+  body('songId').notEmpty().isInt(),
+  body('order').notEmpty().isInt(),
+  body('addedBy').notEmpty().isInt(),
+  validate,
+  (request, response) => {
+    response.send(`Add song to course: ${request.body}`);
+  });
 
 export default coursesRouter;
