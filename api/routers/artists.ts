@@ -1,6 +1,8 @@
-import { Request, Router } from 'express';
+import { Router } from 'express';
+import { artistsController } from '../controllers';
 
 const artistsRouter = Router();
+
 /**
 * @openapi
 * /artists:
@@ -26,8 +28,6 @@ const artistsRouter = Router();
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
  */
-artistsRouter.route('/').get((request, response) => {
-  response.send('Get all artists.');
-});
+artistsRouter.route('/').get(artistsController.getArtists);
 
 export default artistsRouter;

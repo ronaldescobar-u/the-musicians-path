@@ -1,8 +1,7 @@
 import { Request, Router } from 'express';
 import { body, query } from 'express-validator';
 import validate from '../utils/validation';
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+
 const songsRouter = Router();
 
 interface SongsQueryParams {

@@ -1,6 +1,8 @@
-import { Request, Router } from 'express';
+import { Router } from 'express';
+import { genresController } from '../controllers';
 
 const genresRouter = Router();
+
 /**
 * @openapi
 * /genres:
@@ -26,8 +28,6 @@ const genresRouter = Router();
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
  */
-genresRouter.route('/').get((request, response) => {
-  response.send('Get all genres.');
-});
+genresRouter.route('/').get(genresController.getGenres);
 
 export default genresRouter;
