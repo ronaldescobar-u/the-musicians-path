@@ -28,9 +28,9 @@ async function getCourses(req: Request<{}, {}, {}, { searchQuery: string }>, res
 
 async function getCourse(req: Request, res: Response) {
   const { id } = req.params;
-  const courses = await prisma.course.findUnique({
-    select: {id: true, name: true, description: true, user: true, },
-    where: { id: parseInt(id) }
+  const courses = await prisma.course.findFirst({
+    select: {id: true, name: true, description: true, user: true },
+    where: { id: parseInt(id) },
   });
   res.json(courses);
 }
@@ -61,4 +61,34 @@ async function deleteCourse(req: Request, res: Response) {
   res.sendStatus(204);
 }
 
-export default { getCourses, getCourse, createCourse, updateCourse, deleteCourse };
+async function getRatingsOfCourse(req: Request, res: Response) {
+  const { id } = req.params;
+  const courses = await prisma.course.rating
+}
+
+async function submitRatingToCourse(req: Request, res: Response) {
+  const { id } = req.params;
+  const courses = await prisma.course.rating
+}
+
+async function enrollUserToCourse(req: Request, res: Response) {
+  const { id } = req.params;
+  const courses = await prisma.course.rating
+}
+
+async function addSongToCourse(req: Request, res: Response) {
+  const { id } = req.params;
+  const courses = await prisma.course.rating
+}
+
+export default {
+  getCourses,
+  getCourse,
+  createCourse,
+  updateCourse,
+  deleteCourse,
+  getRatingsOfCourse,
+  submitRatingToCourse,
+  enrollUserToCourse,
+  addSongToCourse
+};
