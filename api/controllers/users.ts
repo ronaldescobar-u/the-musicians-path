@@ -12,10 +12,10 @@ interface User {
 
 async function createUser(req: Request<{}, {}, User>, res: Response) {
   const { firstName, lastName, email, password } = req.body;
-  const artists = await prisma.user.create({
+  await prisma.user.create({
     data: { firstName, lastName, email, password }
   })
-  res.json(artists);
+  res.sendStatus(201);
 }
 
 export default { createUser };

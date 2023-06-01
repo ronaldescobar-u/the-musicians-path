@@ -26,8 +26,8 @@ model course {
   id          Int           @id(map: "course_pk") @default(autoincrement())
   name        String        @db.VarChar
   description String?       @db.VarChar
-  added_by    Int
-  user        user          @relation(fields: [added_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "course_added_by_user_id_fk")
+  addedBy    Int            @map("added_by")
+  user        user          @relation(fields: [addedBy], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "course_added_by_user_id_fk")
   course_song course_song[]
   course_user course_user[]
   rating      rating[]

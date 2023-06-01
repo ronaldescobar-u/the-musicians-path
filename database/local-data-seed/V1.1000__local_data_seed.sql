@@ -21,7 +21,8 @@ values (1, 1, 'C D G B'),
 (5, 1, 'Fm Bm A C');
 
 insert into course(name, description, added_by)
-values ('The Beatles: Begginers Course', 'Only easy songs to play by The Beatles', 1);
+values ('The Beatles: Begginers Course', 'Only easy songs to play by The Beatles', 1),
+('80s Classics', '80s songs from beginner to advanced', 1);
 
 insert into course_song(course_id, song_id, "order", added_by)
 values (1, 1, 1, 1), (1, 2, 2, 1), (1, 3, 3, 1);

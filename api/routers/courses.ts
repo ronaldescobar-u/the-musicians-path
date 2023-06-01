@@ -1,6 +1,7 @@
-import { Request, Router } from 'express';
+import { Router } from 'express';
 import { body } from 'express-validator';
 import validate from '../utils/validation';
+import { coursesController } from '../controllers';
 
 const coursesRouter = Router();
 /**
@@ -35,9 +36,7 @@ const coursesRouter = Router();
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-coursesRouter.route('/').get((request: Request<{}, {}, {}, { searchQuery: string }>, response) => {
-  response.send(`Get courses. Query param: ${request.query.searchQuery}`);
-});
+coursesRouter.route('/').get(coursesController.getCourses);
 
 /**
 * @openapi
@@ -91,9 +90,7 @@ coursesRouter.route('/').get((request: Request<{}, {}, {}, { searchQuery: string
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
  */
-coursesRouter.route('/:id(\\d+)').get((request: Request<{ id: number }>, response) => {
-  response.send(`Get courses. Path param: ${request.params.id}`);
-});
+coursesRouter.route('/:id(\\d+)').get(coursesController.getCourse);
 
 /**
 * @openapi
@@ -133,9 +130,8 @@ coursesRouter.route('/').post(
   body('name').notEmpty(),
   body('addedBy').notEmpty().isInt(),
   validate,
-  (request, response) => {
-    response.send(`Create course. Body: ${request.body}`);
-  });
+  coursesController.createCourse
+);
 
 /**
 * @openapi
@@ -172,9 +168,7 @@ coursesRouter.route('/').post(
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-coursesRouter.route('/:id(\\d+)').put((request, response) => {
-  response.send(`Update course by id. Body: ${request.body}`);
-});
+coursesRouter.route('/:id(\\d+)').put(coursesController.updateCourse);
 
 /**
 * @openapi
@@ -199,9 +193,7 @@ coursesRouter.route('/:id(\\d+)').put((request, response) => {
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-coursesRouter.route('/:id(\\d+)').delete((request, response) => {
-  response.send(`Delete course by id: ${request.params.id}`);
-});
+coursesRouter.route('/:id(\\d+)').delete(coursesController.deleteCourse);
 
 /**
 * @openapi
