@@ -122,8 +122,8 @@ model song_file {
 
 model user {
   id               Int                @id(map: "user_pk") @default(autoincrement())
-  first_name       String             @db.VarChar
-  last_name        String             @db.VarChar
+  firstName        String             @db.VarChar @map("first_name")
+  lastName         String             @db.VarChar @map("last_name")
   email            String             @unique @db.VarChar
   password         String             @db.VarChar
   comment          comment[]

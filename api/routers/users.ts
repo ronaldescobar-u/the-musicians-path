@@ -1,6 +1,7 @@
-import { Request, Router } from 'express';
+import { Router } from 'express';
 import { body } from 'express-validator';
 import validate from '../utils/validation';
+import { usersController } from '../controllers';
 
 const usersRouter = Router();
 
@@ -48,8 +49,7 @@ usersRouter.route('/').post(
   body('email').notEmpty().isEmail(),
   body('password').notEmpty().isStrongPassword({ minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 }),
   validate,
-  (request, response) => {
-    response.send(`Register user. Body: ${request.body}`);
-  });
+  usersController.createUser
+);
 
 export default usersRouter;
