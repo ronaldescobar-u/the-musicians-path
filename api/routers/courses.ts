@@ -244,9 +244,7 @@ coursesRouter.route('/:id(\\d+)').delete(coursesController.deleteCourse);
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-coursesRouter.route('/:id(\\d+)/ratings').get((request, response) => {
-  response.send(`Get ratings of course: ${request.params.id}`);
-});
+coursesRouter.route('/:id(\\d+)/ratings').get(coursesController.getRatingsOfCourse);
 
 /**
 * @openapi
@@ -290,9 +288,8 @@ coursesRouter.route('/:id(\\d+)/ratings').post(
   body('addedBy').notEmpty().isInt(),
   body('stars').notEmpty().isFloat({ min: 0, max: 5 }),
   validate,
-  (request, response) => {
-    response.send(`Submit rating for course: ${request.body}`);
-  });
+  coursesController.submitRatingToCourse
+);
 
 /**
 * @openapi
@@ -334,9 +331,8 @@ coursesRouter.route('/:id(\\d+)/users').post(
   body('userId').notEmpty().isInt(),
   body('enrollmentDate').notEmpty().isDate(),
   validate,
-  (request, response) => {
-    response.send(`Enroll user to course: ${request.body}`);
-  });
+  coursesController.enrollUserToCourse
+);
 
 /**
 * @openapi
@@ -382,8 +378,7 @@ coursesRouter.route('/:id(\\d+)/songs').post(
   body('order').notEmpty().isInt(),
   body('addedBy').notEmpty().isInt(),
   validate,
-  (request, response) => {
-    response.send(`Add song to course: ${request.body}`);
-  });
+  coursesController.addSongToCourse
+);
 
 export default coursesRouter;

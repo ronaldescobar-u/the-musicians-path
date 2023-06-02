@@ -29,7 +29,7 @@ async function getCourses(req: Request<{}, {}, {}, { searchQuery: string }>, res
 async function getCourse(req: Request, res: Response) {
   const { id } = req.params;
   const courses = await prisma.course.findFirst({
-    select: {id: true, name: true, description: true, user: true },
+    select: { id: true, name: true, description: true, user: true },
     where: { id: parseInt(id) },
   });
   res.json(courses);
@@ -62,8 +62,11 @@ async function deleteCourse(req: Request, res: Response) {
 }
 
 async function getRatingsOfCourse(req: Request, res: Response) {
-  // const { id } = req.params;
-  // const courses = await prisma.course.rating
+  const { id } = req.params;
+  const ratings = prisma.rating.findMany({
+    where: { courseId: id }
+  })
+  res.json(ratings);
 }
 
 async function submitRatingToCourse(req: Request, res: Response) {
