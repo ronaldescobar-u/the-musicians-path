@@ -62,23 +62,23 @@ async function deleteCourse(req: Request, res: Response) {
 }
 
 async function getRatingsOfCourse(req: Request, res: Response) {
-  const { id } = req.params;
-  const courses = await prisma.course.rating
+  // const { id } = req.params;
+  // const courses = await prisma.course.rating
 }
 
 async function submitRatingToCourse(req: Request, res: Response) {
-  const { id } = req.params;
-  const courses = await prisma.course.rating
+  // const { id } = req.params;
+  // const courses = await prisma.course.rating
 }
 
 async function enrollUserToCourse(req: Request, res: Response) {
-  const { id } = req.params;
-  const courses = await prisma.course.rating
+  // const { id } = req.params;
+  // const courses = await prisma.course.rating
 }
 
 async function addSongToCourse(req: Request, res: Response) {
-  const { id } = req.params;
-  const courses = await prisma.course.rating
+  // const { id } = req.params;
+  // const courses = await prisma.course.rating
 }
 
 export default {

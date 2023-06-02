@@ -9,4 +9,4 @@ RUN npm install -g nodemon
 
 ENTRYPOINT ["sh", "-c"]
 
-CMD ["npm install && npx prisma generate && npm start"]
+CMD ["npm install && npm start"]

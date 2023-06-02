@@ -31,6 +31,6 @@ services:
     depends_on:
       - flyway
     environment:
-      DATABASE_URL: "postgresql://postgres:password@db:5432/todo?schema=public"
+      DATABASE_URL: "postgresql://postgres:password@db:5432/the_musicians_path?schema=public"
 volumes:
   db:
