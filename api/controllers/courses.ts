@@ -1,13 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express';
+import { Course, CourseSong, CourseUser, Rating } from '../interfaces';
 
 const prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error'], });
-
-interface Course {
-  name: string;
-  description?: string;
-  addedBy: number;
-}
 
 async function getCourses(req: Request<{}, {}, {}, { searchQuery: string }>, res: Response) {
   const { searchQuery } = req.query;
@@ -29,7 +24,7 @@ async function getCourses(req: Request<{}, {}, {}, { searchQuery: string }>, res
 async function getCourse(req: Request, res: Response) {
   const { id } = req.params;
   const courses = await prisma.course.findFirst({
-    select: { id: true, name: true, description: true, user: true },
+    select: { id: true, name: true, description: true, user: true, course_song: true },
     where: { id: parseInt(id) },
   });
   res.json(courses);
@@ -38,7 +33,7 @@ async function getCourse(req: Request, res: Response) {
 async function createCourse(req: Request<{}, {}, Course>, res: Response) {
   const { name, description, addedBy } = req.body;
   await prisma.course.create({
-    data: { name, description, addedBy }
+    data: { name, description, added_by: addedBy }
   })
   res.sendStatus(201);
 }
@@ -64,24 +59,42 @@ async function deleteCourse(req: Request, res: Response) {
 async function getRatingsOfCourse(req: Request, res: Response) {
   const { id } = req.params;
   const ratings = prisma.rating.findMany({
-    where: { courseId: id }
+    where: { course_id: parseInt(id) }
   })
   res.json(ratings);
 }
 
-async function submitRatingToCourse(req: Request, res: Response) {
-  // const { id } = req.params;
-  // const courses = await prisma.course.rating
+async function submitRatingToCourse(req: Request<{ id: string }, {}, Rating>, res: Response) {
+  const { id } = req.params;
+  const { stars, text, addedBy } = req.body;
+  await prisma.rating.create({
+    data: { course_id: parseInt(id), stars, text, added_by: addedBy }
+  })
+  res.sendStatus(201);
 }
 
-async function enrollUserToCourse(req: Request, res: Response) {
-  // const { id } = req.params;
-  // const courses = await prisma.course.rating
+async function enrollUserToCourse(req: Request<{ id: string }, {}, CourseUser>, res: Response) {
+  const { id } = req.params;
+  const { userId, enrollmentDate } = req.body;
+  await prisma.course_user.create({
+    data: { course_id: parseInt(id), user_id: userId, enrollment_date: enrollmentDate }
+  })
+  res.sendStatus(201);
 }
 
-async function addSongToCourse(req: Request, res: Response) {
-  // const { id } = req.params;
-  // const courses = await prisma.course.rating
+async function addSongToCourse(req: Request<{ id: string }, {}, CourseSong>, res: Response) {
+  const { id } = req.params;
+  const { songId, order, addedBy } = req.body;
+  await prisma.course_song.create({
+    data: {
+      course_id: parseInt(id),
+      song_id: songId,
+      order,
+      added_by: addedBy,
+      is_approved: true
+    }
+  })
+  res.sendStatus(201);
 }
 
 export default {

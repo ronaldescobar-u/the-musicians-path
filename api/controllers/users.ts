@@ -1,19 +1,13 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express';
+import { User } from '../interfaces';
 
 const prisma = new PrismaClient()
-
-interface User {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string
-}
 
 async function createUser(req: Request<{}, {}, User>, res: Response) {
   const { firstName, lastName, email, password } = req.body;
   await prisma.user.create({
-    data: { firstName, lastName, email, password }
+    data: { first_name: firstName, last_name: lastName, email, password }
   })
   res.sendStatus(201);
 }
