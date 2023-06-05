@@ -23,11 +23,11 @@ async function getCourses(req: Request<{}, {}, {}, { searchQuery: string }>, res
 
 async function getCourse(req: Request, res: Response) {
   const { id } = req.params;
-  const courses = await prisma.course.findFirst({
+  const course = await prisma.course.findUnique({
     select: { id: true, name: true, description: true, user: true, course_song: true },
     where: { id: parseInt(id) },
   });
-  res.json(courses);
+  res.json(course);
 }
 
 async function createCourse(req: Request<{}, {}, Course>, res: Response) {
@@ -58,7 +58,7 @@ async function deleteCourse(req: Request, res: Response) {
 
 async function getRatingsOfCourse(req: Request, res: Response) {
   const { id } = req.params;
-  const ratings = prisma.rating.findMany({
+  const ratings = await prisma.rating.findMany({
     where: { course_id: parseInt(id) }
   })
   res.json(ratings);
@@ -77,7 +77,7 @@ async function enrollUserToCourse(req: Request<{ id: string }, {}, CourseUser>, 
   const { id } = req.params;
   const { userId, enrollmentDate } = req.body;
   await prisma.course_user.create({
-    data: { course_id: parseInt(id), user_id: userId, enrollment_date: enrollmentDate }
+    data: { course_id: parseInt(id), user_id: userId, enrollment_date: new Date(enrollmentDate) }
   })
   res.sendStatus(201);
 }

@@ -1,14 +1,9 @@
 import { Request, Router } from 'express';
 import { body, query } from 'express-validator';
 import validate from '../utils/validation';
+import { songsController } from '../controllers';
 
 const songsRouter = Router();
-
-interface SongsQueryParams {
-  artistId: number;
-  genreId: number;
-  searchQuery: string;
-}
 
 /**
 * @openapi
@@ -66,9 +61,8 @@ songsRouter.route('/').get(
   query('genreId').optional().isInt(),
   query('searchQuery').optional(),
   validate,
-  (request: Request<{}, {}, {}, SongsQueryParams>, response) => {
-    response.send(`Get songs. Query params: ${request.query}`);
-  });
+  songsController.getSongs
+);
 
 /**
 * @openapi
@@ -117,9 +111,7 @@ songsRouter.route('/').get(
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
  */
-songsRouter.route('/:id(\\d+)').get((request: Request<{ id: number }>, response) => {
-  response.send(`Get songs. Path param: ${request.params.id}`);
-});
+songsRouter.route('/:id(\\d+)').get(songsController.getSong);
 
 /**
 * @openapi
@@ -181,9 +173,8 @@ songsRouter.route('/').post(
   body('files.*.fileTypeId').notEmpty().isInt(),
   body('files.*.value').notEmpty(),
   validate,
-  (request, response) => {
-    response.send(`Create songs. Body: ${request.body}`);
-  });
+  songsController.createSong
+);
 
 /**
 * @openapi
@@ -223,10 +214,7 @@ songsRouter.route('/').post(
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-songsRouter.route('/:id(\\d+)').put(
-  (request: Request<{ id: number }>, response) => {
-    response.send(`Update song by id. Body: ${request.body}`);
-  });
+songsRouter.route('/:id(\\d+)').put(songsController.updateSong);
 
 /**
 * @openapi
@@ -251,9 +239,7 @@ songsRouter.route('/:id(\\d+)').put(
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-songsRouter.route('/:id(\\d+)').delete((request: Request<{ id: number }>, response) => {
-  response.send(`Delete song by id: ${request.params.id}`);
-});
+songsRouter.route('/:id(\\d+)').delete(songsController.deleteSong);
 
 /**
 * @openapi
@@ -302,9 +288,7 @@ songsRouter.route('/:id(\\d+)').delete((request: Request<{ id: number }>, respon
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-songsRouter.route('/:id(\\d+)/comments').get((request: Request<{ id: number }>, response) => {
-  response.send(`Get comments of song. Path param: ${request.params.id}`);
-});
+songsRouter.route('/:id(\\d+)/comments').get(songsController.getCommentsOfSong);
 
 /**
 * @openapi
@@ -345,8 +329,7 @@ songsRouter.route('/:id(\\d+)/comments').post(
   body('addedBy').notEmpty().isInt(),
   body('text').notEmpty(),
   validate,
-  (request: Request<{ id: number }>, response) => {
-    response.send(`Post comment to song. Body: ${request.body}`);
-  });
+  songsController.updateSong
+);
 
 export default songsRouter;
