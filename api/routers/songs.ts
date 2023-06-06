@@ -329,7 +329,7 @@ songsRouter.route('/:id(\\d+)/comments').post(
   body('addedBy').notEmpty().isInt(),
   body('text').notEmpty(),
   validate,
-  songsController.updateSong
+  songsController.postCommentToSong
 );
 
 export default songsRouter;
