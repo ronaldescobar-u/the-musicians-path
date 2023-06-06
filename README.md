@@ -486,8 +486,6 @@ Response: `200 OK`
   }
 ]
 ```
-//complete song of course
-//upload songfile and remove songfile
 //`DELETE /songs/:id/files`
 //##### Remove file from a song
 //Response: `200 OK`
