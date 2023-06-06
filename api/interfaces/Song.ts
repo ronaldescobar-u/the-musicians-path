@@ -6,7 +6,7 @@ interface Song {
   genreId: number;
   difficulty: number;
   addedBy: number;
-  songFiles: SongFile[];
+  files: SongFile[];
 }
 
 export default Song;

@@ -1,6 +1,6 @@
 interface SongsQueryParams {
-  artistId: number;
-  genreId: number;
+  artistId: string;
+  genreId: string;
   searchQuery: string;
 }
 

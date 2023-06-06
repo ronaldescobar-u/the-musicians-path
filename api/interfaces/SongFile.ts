@@ -1,6 +1,6 @@
 interface SongFile {
   fileTypeId: number;
-  value: string;
+  content: string;
 }
 
 export default SongFile;

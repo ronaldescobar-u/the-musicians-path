@@ -149,7 +149,7 @@ songsRouter.route('/:id(\\d+)').get(songsController.getSong);
 *                   properties:
 *                     fileTypeId:
 *                       type: number
-*                     value:
+*                     content:
 *                       type: string
 *     responses:
 *       201:
@@ -171,7 +171,7 @@ songsRouter.route('/').post(
   body('addedBy').notEmpty().isInt(),
   body('files').isArray().isLength({ min: 1 }),
   body('files.*.fileTypeId').notEmpty().isInt(),
-  body('files.*.value').notEmpty(),
+  body('files.*.content').notEmpty(),
   validate,
   songsController.createSong
 );

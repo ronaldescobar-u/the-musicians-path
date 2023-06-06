@@ -9,12 +9,12 @@ async function getSongs(req: Request<{}, {}, {}, SongsQueryParams>, res: Respons
   let whereClause: any = { where: {} };
   if (artistId) {
     whereClause = {
-      where: { artist_id: artistId }
+      where: { artist_id: parseInt(artistId) }
     };
   }
   if (genreId) {
     whereClause = {
-      where: { ...whereClause.where, genre_id: genreId }
+      where: { ...whereClause.where, genre_id: parseInt(genreId) }
     };
   }
   if (searchQuery) {
@@ -46,7 +46,7 @@ async function getSong(req: Request, res: Response) {
 }
 
 async function createSong(req: Request<{}, {}, Song>, res: Response) {
-  const { name, artistId, genreId, difficulty, addedBy, songFiles } = req.body;
+  const { name, artistId, genreId, difficulty, addedBy, files } = req.body;
   let createData: any = {
     name,
     artist_id: artistId,
@@ -54,11 +54,11 @@ async function createSong(req: Request<{}, {}, Song>, res: Response) {
     difficulty,
     added_by: addedBy,
   }
-  if (songFiles && songFiles.length) {
+  if (files && files.length) {
     createData = {
       ...createData,
       song_file: {
-        create: songFiles.map(file => ({ ...file, file_type_id: file.fileTypeId }))
+        create: files.map(({ content, fileTypeId }) => ({ content, file_type_id: fileTypeId }))
       }
     }
   }
@@ -100,7 +100,6 @@ async function postCommentToSong(req: Request<{ id: string }, {}, Comment>, res:
   })
   res.sendStatus(201);
 }
-
 
 export default {
   getSongs,
