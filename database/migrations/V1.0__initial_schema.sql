@@ -97,7 +97,7 @@ CREATE TABLE public.song_file (
 	id serial NOT NULL,
 	song_id integer NOT NULL,
 	file_type_id integer NOT NULL,
-	value text NOT NULL,
+	content text NOT NULL,
 	CONSTRAINT song_file_pk PRIMARY KEY (id),
 	CONSTRAINT song_file_song_id_song_id_fk FOREIGN KEY (song_id) REFERENCES public.song(id),
 	CONSTRAINT song_file_file_type_id_file_type_id_fk FOREIGN KEY (file_type_id) REFERENCES public.file_type(id)

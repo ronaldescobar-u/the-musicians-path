@@ -13,7 +13,7 @@ values ('I Want To Hold Your Hand', 1, 1, 3, 1),
 ('I Knew You Were Trouble', 2, 2, 4, 1),
 ('Pink + White', 5, 5, 5, 1);
 
-insert into song_file(song_id, file_type_id, value)
+insert into song_file(song_id, file_type_id, content)
 values (1, 1, 'C D G B'),
 (2, 1, 'Am G D'),
 (3, 1, 'C#m G E B'),

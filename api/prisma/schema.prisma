@@ -115,7 +115,7 @@ model song_file {
   id           Int       @id(map: "song_file_pk") @default(autoincrement())
   song_id      Int
   file_type_id Int
-  value        String
+  content      String
   file_type    file_type @relation(fields: [file_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "song_file_file_type_id_file_type_id_fk")
   song         song      @relation(fields: [song_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "song_file_song_id_song_id_fk")
 }

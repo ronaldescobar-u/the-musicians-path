@@ -6,16 +6,24 @@ const prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error'], });
 
 async function getSongs(req: Request<{}, {}, {}, SongsQueryParams>, res: Response) {
   const { artistId, genreId, searchQuery } = req.query;
-  let whereClause = {};
-  if (searchQuery) [
+  let whereClause: any = { where: {} };
+  if (artistId) {
+    whereClause = {
+      where: { artist_id: artistId }
+    };
+  }
+  if (genreId) {
+    whereClause = {
+      where: { ...whereClause.where, genre_id: genreId }
+    };
+  }
+  if (searchQuery) {
     whereClause = {
       where: {
-        OR: [
-          { name: { contains: searchQuery, mode: 'insensitive' }, },
-        ]
+        ...whereClause.where, name: { contains: searchQuery, mode: 'insensitive' },
       }
-    }
-  ]
+    };
+  }
   const courses = await prisma.song.findMany(whereClause);
   res.json(courses);
 }
@@ -23,16 +31,38 @@ async function getSongs(req: Request<{}, {}, {}, SongsQueryParams>, res: Respons
 async function getSong(req: Request, res: Response) {
   const { id } = req.params;
   const song = await prisma.song.findUnique({
+    select: {
+      id: true,
+      name: true,
+      artist: true,
+      genre: true,
+      difficulty: true,
+      user: true,
+      song_file: true
+    },
     where: { id: parseInt(id) },
   });
   res.json(song);
 }
 
 async function createSong(req: Request<{}, {}, Song>, res: Response) {
-  const { name, artistId, genreId, difficulty, addedBy } = req.body;
-  await prisma.song.create({
-    data: { name, artist_id: artistId, genre_id: genreId, difficulty, added_by: addedBy }
-  })
+  const { name, artistId, genreId, difficulty, addedBy, songFiles } = req.body;
+  let createData: any = {
+    name,
+    artist_id: artistId,
+    genre_id: genreId,
+    difficulty,
+    added_by: addedBy,
+  }
+  if (songFiles && songFiles.length) {
+    createData = {
+      ...createData,
+      song_file: {
+        create: songFiles.map(file => ({ ...file, file_type_id: file.fileTypeId }))
+      }
+    }
+  }
+  await prisma.song.create({ data: createData });
   res.sendStatus(201);
 }
 

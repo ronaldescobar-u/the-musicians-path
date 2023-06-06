@@ -360,11 +360,11 @@ Request:
   "files": [
     {
       "fileTypeId": 1,
-      "value": "C G Bm D"
+      "content": "C G Bm D"
     },
     {
       "fileTypeId": 2,
-      "value": "https://www.youtube.com"
+      "content": "https://www.youtube.com"
     },
   ]
 }
