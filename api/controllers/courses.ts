@@ -7,7 +7,7 @@ const prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error'], });
 async function getCourses(req: Request<{}, {}, {}, { searchQuery: string }>, res: Response) {
   const { searchQuery } = req.query;
   let whereClause = {};
-  if (searchQuery) [
+  if (searchQuery) {
     whereClause = {
       where: {
         OR: [
@@ -16,7 +16,7 @@ async function getCourses(req: Request<{}, {}, {}, { searchQuery: string }>, res
         ]
       }
     }
-  ]
+  }
   const courses = await prisma.course.findMany(whereClause);
   res.json(courses);
 }
@@ -24,7 +24,30 @@ async function getCourses(req: Request<{}, {}, {}, { searchQuery: string }>, res
 async function getCourse(req: Request, res: Response) {
   const { id } = req.params;
   const course = await prisma.course.findUnique({
-    select: { id: true, name: true, description: true, user: true, course_song: true },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      user: { select: { first_name: true, last_name: true } },
+      course_song: {
+        // include: {
+        //   song: {
+        //   }
+        // },
+        select: {
+          song: {
+            select: {
+              name: true,
+              artist: true,
+              genre: true,
+              difficulty: true
+            },
+            // where: {1}
+          },
+          order: true
+        }
+      }
+    },
     where: { id: parseInt(id) },
   });
   res.json(course);
@@ -59,6 +82,7 @@ async function deleteCourse(req: Request, res: Response) {
 async function getRatingsOfCourse(req: Request, res: Response) {
   const { id } = req.params;
   const ratings = await prisma.rating.findMany({
+    select: { id: true, stars: true, text: true, user: { select: { first_name: true, last_name: true } } },
     where: { course_id: parseInt(id) }
   })
   res.json(ratings);

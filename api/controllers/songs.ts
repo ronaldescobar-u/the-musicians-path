@@ -6,25 +6,25 @@ const prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error'], });
 
 async function getSongs(req: Request<{}, {}, {}, SongsQueryParams>, res: Response) {
   const { artistId, genreId, searchQuery } = req.query;
-  let whereClause: any = { where: {} };
+  let whereClause: any = {};
   if (artistId) {
-    whereClause = {
-      where: { artist_id: parseInt(artistId) }
-    };
+    whereClause = { artist_id: parseInt(artistId) };
   }
   if (genreId) {
-    whereClause = {
-      where: { ...whereClause.where, genre_id: parseInt(genreId) }
-    };
+    whereClause = { ...whereClause, genre_id: parseInt(genreId) };
   }
   if (searchQuery) {
-    whereClause = {
-      where: {
-        ...whereClause.where, name: { contains: searchQuery, mode: 'insensitive' },
-      }
-    };
+    whereClause = { ...whereClause, name: { contains: searchQuery, mode: 'insensitive' } };
   }
-  const courses = await prisma.song.findMany(whereClause);
+  const courses = await prisma.song.findMany({
+    where: whereClause,
+    select: {
+      id: true,
+      artist: true,
+      genre: true,
+      difficulty: true
+    }
+  });
   res.json(courses);
 }
 
@@ -37,8 +37,19 @@ async function getSong(req: Request, res: Response) {
       artist: true,
       genre: true,
       difficulty: true,
-      user: true,
-      song_file: true
+      user: {
+        select: {
+          first_name: true,
+          last_name: true
+        }
+      },
+      song_file: {
+        select: {
+          id: true,
+          file_type: true,
+          content: true
+        }
+      }
     },
     where: { id: parseInt(id) },
   });
@@ -87,6 +98,14 @@ async function deleteSong(req: Request, res: Response) {
 async function getCommentsOfSong(req: Request, res: Response) {
   const { id } = req.params;
   const comments = await prisma.comment.findMany({
+    select: {
+      id: true, user: {
+        select: {
+          first_name: true,
+          last_name: true
+        }
+      }, text: true
+    },
     where: { song_id: parseInt(id) }
   })
   res.json(comments);
