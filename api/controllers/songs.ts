@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express';
 import { Song, Comment, SongsQueryParams } from '../interfaces';
 
-const prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error'], });
+const prisma = new PrismaClient();
 
 async function getSongs(req: Request<{}, {}, {}, SongsQueryParams>, res: Response) {
   const { artistId, genreId, searchQuery } = req.query;

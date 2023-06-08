@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express';
 import { Course, CourseSong, CourseUser, Rating } from '../interfaces';
 
-const prisma = new PrismaClient({ log: ['query', 'info', 'warn', 'error'], });
+const prisma = new PrismaClient();
 
 async function getCourses(req: Request<{}, {}, {}, { searchQuery: string }>, res: Response) {
   const { searchQuery } = req.query;
