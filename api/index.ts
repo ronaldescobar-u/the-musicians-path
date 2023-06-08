@@ -1,7 +1,8 @@
 import express, { json, urlencoded } from 'express';
-import { coursesRouter, songsRouter, usersRouter, artistsRouter, genresRouter } from './routers';
+import { coursesRouter, songsRouter, usersRouter, artistsRouter, genresRouter, authenticationRouter } from './routers';
 import swaggerUI from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
+import verifyToken from './middlewares/authentication';
 
 const app = express();
 
@@ -13,9 +14,24 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: "http://localhost:3000",
+      url: "http://localhost:3001",
       description: "Local development server",
     },
+  ],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        in: 'header',
+        name: 'Authorization',
+        description: 'Bearer token to access API endpoints',
+        scheme: 'bearer',
+        bearerFormat: 'JWT'
+      }
+    }
+  },
+  security: [
+    { bearerAuth: [] }
   ]
 };
 
@@ -29,6 +45,10 @@ app.use(urlencoded({ extended: true }));
 
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(openapiSpecification));
 app.use("/swagger.json", (req, res) => res.json(openapiSpecification).status(200));
+
+app.use('/authentication', authenticationRouter);
+
+app.all("*", verifyToken);
 
 app.use('/courses', coursesRouter);
 app.use('/songs', songsRouter);
