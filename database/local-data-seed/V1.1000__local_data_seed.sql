@@ -4,7 +4,7 @@ insert into genre(name) values ('Rock'), ('Pop'), ('Hip Hop'), ('Jazz'), ('R&B')
 
 insert into artist(name) values ('The Beatles'), ('Taylor Swift'), ('Kendrick Lamar'), ('Miles Davis'), ('Frank Ocean');
 
-insert into "user"(first_name, last_name, email, password) values ('John', 'Doe', 'johndoe@email.com', 'password');
+insert into "user"(first_name, last_name, email, password) values ('John', 'Doe', 'johndoe@email.com', '$2a$10$SgXiknNj4lpH/QbrPfTKLu290I32d/soWZ1bTOir1TG2IL5l2h25.');
 
 insert into song(name, artist_id, genre_id, difficulty, added_by)
 values ('I Want To Hold Your Hand', 1, 1, 3, 1),
