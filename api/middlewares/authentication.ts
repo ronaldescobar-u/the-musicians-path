@@ -7,6 +7,7 @@ async function verifyToken(req: Request, res: Response, next: NextFunction) {
   if (token) {
     const tokenVerified = jwt.verify(token, process.env.JWT_SECRET);
     if (tokenVerified) {
+      res.locals.user = tokenVerified.userId;
       return next();
     }
   }
