@@ -52,4 +52,44 @@ usersRouter.route('/').post(
   usersController.createUser
 );
 
+/**
+* @openapi
+* /users/{id}:
+*   put:
+*     tags: [
+*       users
+*     ]
+*     requestBody:
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             properties:
+*               firstName:
+*                 type: string
+*               lastName:
+*                 type: string
+*               email:
+*                 type: string
+*               password:
+*                 type: string
+*     responses:
+*       204:
+*         description: No Content
+*       401:
+*         description: Unauthorized
+*         content:
+*           application/json:
+*             examples:
+*               jsonObject:
+*                 summary: An example JSON response
+*                 value: '{ "message": "Unauthorized" }'
+*/
+usersRouter.route('/:id(\\d+)').put(
+  body('email').optional().isEmail(),
+  body('password').optional().isStrongPassword({ minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 }),
+  validate,
+  usersController.updateUser
+);
+
 export default usersRouter;

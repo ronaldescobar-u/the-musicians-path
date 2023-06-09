@@ -49,4 +49,32 @@ authenticationRouter.route('/').post(
   authenticationController.authenticate
 );
 
+/**
+* @openapi
+* /refresh:
+*   get:
+*     tags: [
+*       authentication
+*     ]
+*     responses:
+*       200:
+*         description: OK
+*         content:
+*           application/json:
+*             examples:
+*               jsonObject:
+*                 value: '{ "accessToken": "string", "refreshToken": "string" }'
+*       401:
+*         description: Unauthorized
+*         content:
+*           application/json:
+*             examples:
+*               jsonObject:
+*                 summary: An example JSON response
+*                 value: '{ "message": "Unauthorized" }'
+*/
+authenticationRouter.route('/refresh').get(
+  authenticationController.refresh
+);
+
 export default authenticationRouter;

@@ -14,4 +14,15 @@ async function createUser(req: Request<{}, {}, User>, res: Response) {
   res.sendStatus(201);
 }
 
-export default { createUser };
+async function updateUser(req: Request<{ id: string }, {}, User>, res: Response) {
+  const { firstName, lastName, email, password } = req.body;
+  const { id } = req.params;
+  const encryptedPassword = await bcrypt.hash(password, 10);
+  await prisma.user.update({
+    where: { id: parseInt(id) },
+    data: { first_name: firstName, last_name: lastName, email, password: encryptedPassword }
+  })
+  res.sendStatus(201);
+}
+
+export default { createUser, updateUser };
