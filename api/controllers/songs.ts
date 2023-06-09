@@ -53,6 +53,9 @@ async function getSong(req: Request, res: Response) {
     },
     where: { id: parseInt(id) },
   });
+  if (!song) {
+    return res.sendStatus(404);
+  }
   res.json(song);
 }
 

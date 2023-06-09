@@ -46,7 +46,10 @@ async function getCourse(req: Request, res: Response) {
     },
     where: { id: parseInt(id) },
   });
-  res.json(course);
+  if (!course) {
+    return res.sendStatus(404);
+  }
+  return res.json(course);
 }
 
 async function createCourse(req: Request<{}, {}, Course>, res: Response) {
