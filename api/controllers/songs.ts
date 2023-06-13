@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express';
 import { Song, Comment, SongsQueryParams } from '../interfaces';
-
-const prisma = new PrismaClient();
+import prismaClient from '../prisma/client';
 
 async function getSongs(req: Request<{}, {}, {}, SongsQueryParams>, res: Response) {
   const { artistId, genreId, searchQuery } = req.query;
@@ -16,7 +14,7 @@ async function getSongs(req: Request<{}, {}, {}, SongsQueryParams>, res: Respons
   if (searchQuery) {
     whereClause = { ...whereClause, name: { contains: searchQuery, mode: 'insensitive' } };
   }
-  const courses = await prisma.song.findMany({
+  const courses = await prismaClient.song.findMany({
     where: whereClause,
     select: {
       id: true,
@@ -30,7 +28,7 @@ async function getSongs(req: Request<{}, {}, {}, SongsQueryParams>, res: Respons
 
 async function getSong(req: Request, res: Response) {
   const { id } = req.params;
-  const song = await prisma.song.findUnique({
+  const song = await prismaClient.song.findUnique({
     select: {
       id: true,
       name: true,
@@ -76,14 +74,14 @@ async function createSong(req: Request<{}, {}, Song>, res: Response) {
       }
     }
   }
-  await prisma.song.create({ data: createData });
+  await prismaClient.song.create({ data: createData });
   res.sendStatus(201);
 }
 
 async function updateSong(req: Request<{ id: string }, {}, Song>, res: Response) {
   const { name, artistId, genreId, difficulty } = req.body;
   const { id } = req.params;
-  await prisma.song.update({
+  await prismaClient.song.update({
     where: { id: parseInt(id) },
     data: { name, artist_id: artistId, genre_id: genreId, difficulty }
   })
@@ -92,7 +90,7 @@ async function updateSong(req: Request<{ id: string }, {}, Song>, res: Response)
 
 async function deleteSong(req: Request, res: Response) {
   const { id } = req.params;
-  await prisma.song.delete({
+  await prismaClient.song.delete({
     where: { id: parseInt(id) }
   });
   res.sendStatus(204);
@@ -100,7 +98,7 @@ async function deleteSong(req: Request, res: Response) {
 
 async function getCommentsOfSong(req: Request, res: Response) {
   const { id } = req.params;
-  const comments = await prisma.comment.findMany({
+  const comments = await prismaClient.comment.findMany({
     select: {
       id: true, user: {
         select: {
@@ -117,7 +115,7 @@ async function getCommentsOfSong(req: Request, res: Response) {
 async function postCommentToSong(req: Request<{ id: string }, {}, Comment>, res: Response) {
   const { id } = req.params;
   const { text, addedBy } = req.body;
-  await prisma.comment.create({
+  await prismaClient.comment.create({
     data: { song_id: parseInt(id), text, added_by: addedBy }
   })
   res.sendStatus(201);
