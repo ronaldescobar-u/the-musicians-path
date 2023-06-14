@@ -30,6 +30,8 @@ async function getCourse(req: Request, res: Response) {
       description: true,
       user: { select: { first_name: true, last_name: true } },
       course_song: {
+        where: { is_approved: true },
+        orderBy: { order: 'asc' },
         select: {
           song: {
             select: {
@@ -38,7 +40,6 @@ async function getCourse(req: Request, res: Response) {
               genre: true,
               difficulty: true
             },
-            // where: { is_approved: true }
           },
           order: true
         }
