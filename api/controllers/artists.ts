@@ -1,10 +1,8 @@
-import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express';
-
-const prisma = new PrismaClient()
+import prismaClient from '../prisma/client';
 
 async function getArtists(req: Request, res: Response) {
-  const artists = await prisma.artist.findMany();
+  const artists = await prismaClient.artist.findMany();
   res.json(artists);
 }
 

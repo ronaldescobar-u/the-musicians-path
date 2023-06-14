@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express';
 import { Course, CourseSong, CourseUser, Rating } from '../interfaces';
-
-const prisma = new PrismaClient();
+import prismaClient from '../prisma/client';
 
 async function getCourses(req: Request<{}, {}, {}, { searchQuery: string }>, res: Response) {
   const { searchQuery } = req.query;
@@ -17,13 +15,13 @@ async function getCourses(req: Request<{}, {}, {}, { searchQuery: string }>, res
       }
     }
   }
-  const courses = await prisma.course.findMany(whereClause);
+  const courses = await prismaClient.course.findMany(whereClause);
   res.json(courses);
 }
 
 async function getCourse(req: Request, res: Response) {
   const { id } = req.params;
-  const course = await prisma.course.findUnique({
+  const course = await prismaClient.course.findUnique({
     select: {
       id: true,
       name: true,
@@ -55,7 +53,7 @@ async function getCourse(req: Request, res: Response) {
 
 async function createCourse(req: Request<{}, {}, Course>, res: Response) {
   const { name, description, addedBy } = req.body;
-  await prisma.course.create({
+  await prismaClient.course.create({
     data: { name, description, added_by: addedBy }
   })
   res.sendStatus(201);
@@ -64,7 +62,7 @@ async function createCourse(req: Request<{}, {}, Course>, res: Response) {
 async function updateCourse(req: Request<{ id: string }, {}, Course>, res: Response) {
   const { name, description } = req.body;
   const { id } = req.params;
-  await prisma.course.update({
+  await prismaClient.course.update({
     where: { id: parseInt(id) },
     data: { name, description }
   })
@@ -73,7 +71,7 @@ async function updateCourse(req: Request<{ id: string }, {}, Course>, res: Respo
 
 async function deleteCourse(req: Request, res: Response) {
   const { id } = req.params;
-  await prisma.course.delete({
+  await prismaClient.course.delete({
     where: { id: parseInt(id) }
   });
   res.sendStatus(204);
@@ -81,7 +79,7 @@ async function deleteCourse(req: Request, res: Response) {
 
 async function getRatingsOfCourse(req: Request, res: Response) {
   const { id } = req.params;
-  const ratings = await prisma.rating.findMany({
+  const ratings = await prismaClient.rating.findMany({
     select: { id: true, stars: true, text: true, user: { select: { first_name: true, last_name: true } } },
     where: { course_id: parseInt(id) }
   })
@@ -91,7 +89,7 @@ async function getRatingsOfCourse(req: Request, res: Response) {
 async function submitRatingToCourse(req: Request<{ id: string }, {}, Rating>, res: Response) {
   const { id } = req.params;
   const { stars, text, addedBy } = req.body;
-  await prisma.rating.create({
+  await prismaClient.rating.create({
     data: { course_id: parseInt(id), stars, text, added_by: addedBy }
   })
   res.sendStatus(201);
@@ -100,7 +98,7 @@ async function submitRatingToCourse(req: Request<{ id: string }, {}, Rating>, re
 async function enrollUserToCourse(req: Request<{ id: string }, {}, CourseUser>, res: Response) {
   const { id } = req.params;
   const { userId, enrollmentDate } = req.body;
-  await prisma.course_user.create({
+  await prismaClient.course_user.create({
     data: { course_id: parseInt(id), user_id: userId, enrollment_date: new Date(enrollmentDate) }
   })
   res.sendStatus(201);
@@ -109,7 +107,7 @@ async function enrollUserToCourse(req: Request<{ id: string }, {}, CourseUser>, 
 async function addSongToCourse(req: Request<{ id: string }, {}, CourseSong>, res: Response) {
   const { id } = req.params;
   const { songId, order, addedBy } = req.body;
-  await prisma.course_song.create({
+  await prismaClient.course_song.create({
     data: {
       course_id: parseInt(id),
       song_id: songId,

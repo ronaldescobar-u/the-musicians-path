@@ -1,4 +1,5 @@
 interface SongFile {
+  songId?: number;
   fileTypeId: number;
   content: string;
 }

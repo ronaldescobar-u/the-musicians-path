@@ -1,10 +1,8 @@
-import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express';
-
-const prisma = new PrismaClient()
+import prismaClient from '../prisma/client';
 
 async function getGenres(req: Request, res: Response) {
-  const genres = await prisma.genre.findMany();
+  const genres = await prismaClient.genre.findMany();
   res.json(genres);
 }
 
