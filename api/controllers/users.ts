@@ -20,7 +20,7 @@ async function updateUser(req: Request<{ id: string }, {}, User>, res: Response)
     where: { id: parseInt(id) },
     data: { first_name: firstName, last_name: lastName, email, password: encryptedPassword }
   })
-  res.sendStatus(201);
+  res.sendStatus(204);
 }
 
 export default { createUser, updateUser };

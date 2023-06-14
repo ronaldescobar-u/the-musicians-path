@@ -6,7 +6,7 @@ import prismaClient from '../prisma/client';
 
 async function authenticate(req: Request<{}, {}, AuthenticateDto>, res: Response) {
   const { email, password } = req.body;
-  const user = await prismaClient.user.findFirst({ where: { email } });
+  const user = await prismaClient.user.findUnique({ where: { email } });
   if (user) {
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (isPasswordCorrect) {

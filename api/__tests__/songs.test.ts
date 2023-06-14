@@ -83,11 +83,11 @@ describe('songs controller', () => {
       };
       const prismaClientAsAny = prismaClient as any;
       prismaClientAsAny.song = { create: jest.fn() };
+      const { name, artistId, genreId, difficulty, addedBy } = req.body;
 
       await songsController.createSong(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      const { name, artistId, genreId, difficulty, addedBy } = req.body;
       expect(prismaClientAsAny.song.create).toHaveBeenCalledWith({ data: { name, artist_id: artistId, genre_id: genreId, difficulty, added_by: addedBy } });
     });
 
@@ -98,11 +98,11 @@ describe('songs controller', () => {
       };
       const prismaClientAsAny = prismaClient as any;
       prismaClientAsAny.song = { create: jest.fn() };
+      const { name, artistId, genreId, difficulty, addedBy, files } = req.body;
 
       await songsController.createSong(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      const { name, artistId, genreId, difficulty, addedBy, files } = req.body;
       expect(prismaClientAsAny.song.create).toHaveBeenCalledWith({ data: { name, artist_id: artistId, genre_id: genreId, difficulty, added_by: addedBy, song_file: { create: [{ content: 'C G B A', file_type_id: 1 }] } } });
     });
   });
