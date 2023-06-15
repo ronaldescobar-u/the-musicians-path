@@ -142,15 +142,13 @@ describe('songs controller', () => {
   describe('getCommentsOfSong', () => {
     it('should return comments and call findMany', async () => {
       const selectObject = {
-        select: {
-          id: true,
-          user: {
-            select: {
-              first_name: true,
-              last_name: true
-            }
-          }, text: true
-        },
+        id: true,
+        user: {
+          select: {
+            first_name: true,
+            last_name: true
+          }
+        }, text: true
       };
       const comments = [{ text: 'hi' }];
       const req = { params: { id: '1' } };
@@ -170,7 +168,7 @@ describe('songs controller', () => {
   describe('postCommentToSong', () => {
     it('should return 201 and call create', async () => {
       const req = { params: { id: '1' }, body: { text: 'test', addedBy: 1 } };
-      const {text, addedBy} = req.body;
+      const { text, addedBy } = req.body;
       const res = {
         sendStatus: jest.fn()
       };

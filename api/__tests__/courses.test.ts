@@ -113,7 +113,7 @@ describe('courses controller', () => {
       await coursesController.updateCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(204);
-      expect(prismaClientAsAny.song.update).toHaveBeenCalledWith({ where: { id: 1 }, data: { name: 'course' } });
+      expect(prismaClientAsAny.course.update).toHaveBeenCalledWith({ where: { id: 1 }, data: { name: 'course' } });
     });
   });
 

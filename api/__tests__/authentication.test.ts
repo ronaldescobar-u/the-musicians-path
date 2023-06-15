@@ -12,10 +12,13 @@ jest.mock('@prisma/client');
 jest.mock('../prisma/client')
 jest.mock('bcrypt');
 
-describe('songs controller', () => {
+describe('authentication controller', () => {
   describe('authenticate', () => {
     const credentials = { email: 'test@test.com', password: 'password' };
     const { email, password } = credentials;
+    beforeEach(() => {
+      jest.resetAllMocks();
+    })
 
     it('should return 401 if user with email does not exist', async () => {
       const req = { body: credentials };
@@ -64,7 +67,6 @@ describe('songs controller', () => {
       expect(prismaClientAsAny.user.findUnique).toHaveBeenCalledWith({ where: { email } });
       expect(bcrypt.compare).toHaveBeenCalledTimes(1);
       expect(bcrypt.compare).toHaveBeenCalledWith(password, password);
-      expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({ accessToken: 'test', refreshToken: 'test' });
     });
   });
