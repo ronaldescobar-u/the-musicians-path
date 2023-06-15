@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 import generateTokens from '../utils/generateTokens';
 jest.mock('../utils/generateTokens', () => ({
   __esModule: true,
-  default: jest.fn(),
+  default: jest.fn(() => ({ accessToken: 'test', refreshToken: 'test' })),
 }));
 
 jest.mock('@prisma/client');
@@ -27,7 +27,7 @@ describe('songs controller', () => {
 
       await authenticationController.authenticate(req as any, res as any);
 
-      expect(prismaClientAsAny.user.findMany).toHaveBeenCalledWith({ where: { email } });
+      expect(prismaClientAsAny.user.findUnique).toHaveBeenCalledWith({ where: { email } });
       expect(bcrypt.compare).toHaveBeenCalledTimes(0);
       expect(res.sendStatus).toHaveBeenCalledWith(401);
     });
@@ -42,7 +42,7 @@ describe('songs controller', () => {
 
       await authenticationController.authenticate(req as any, res as any);
 
-      expect(prismaClientAsAny.song.findMany).toHaveBeenCalledWith({ where: { email } });
+      expect(prismaClientAsAny.user.findUnique).toHaveBeenCalledWith({ where: { email } });
       expect(bcrypt.compare).toHaveBeenCalledTimes(1);
       expect(bcrypt.compare).toHaveBeenCalledWith(password, password);
       expect(res.sendStatus).toHaveBeenCalledWith(401);
@@ -50,23 +50,22 @@ describe('songs controller', () => {
 
     it('should return 200 and tokens if authentication is successful', async () => {
       const req = { body: credentials };
-      const res: any = {};
-      res.status = jest.fn(() => res);
-      res.json = jest.fn(() => res);
+      const res: any = {
+        json: jest.fn()
+      };
       const prismaClientAsAny = prismaClient as any;
       prismaClientAsAny.user = { findUnique: jest.fn().mockReturnValueOnce(credentials) };
-      const bcryptAsAny = bcrypt as any;
-      bcryptAsAny.compare = jest.fn().mockResolvedValue(true as never);
+      jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => {
+        return new Promise((resolve) => resolve(true));
+      });
 
       await authenticationController.authenticate(req as any, res as any);
-      // jest.mocked(generateTokens).mockImplementation(() => true)
-      // generateTokens.mockImplementation(() => true)
 
-      expect(prismaClientAsAny.song.findMany).toHaveBeenCalledWith({ where: { email } });
+      expect(prismaClientAsAny.user.findUnique).toHaveBeenCalledWith({ where: { email } });
       expect(bcrypt.compare).toHaveBeenCalledTimes(1);
       expect(bcrypt.compare).toHaveBeenCalledWith(password, password);
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({});
+      expect(res.json).toHaveBeenCalledWith({ accessToken: 'test', refreshToken: 'test' });
     });
   });
 
@@ -74,7 +73,7 @@ describe('songs controller', () => {
     it('should return 401 if no user found', async () => {
       const req = {};
       const res = {
-        locals: {userId: 1},
+        locals: { userId: 1 },
         sendStatus: jest.fn()
       };
       const prismaClientAsAny = prismaClient as any;
@@ -82,21 +81,26 @@ describe('songs controller', () => {
 
       await authenticationController.refresh(req as any, res as any);
 
+      expect(prismaClientAsAny.user.findUnique).toHaveBeenCalledWith({ where: { id: res.locals.userId } });
       expect(res.sendStatus).toHaveBeenCalledWith(401);
     });
 
     it('should return 200 and tokens if user exists', async () => {
-      const song = { name: 'Strawberry fields forever' };
-      const req = { params: { id: '1' } };
-      const res = {
+      const user = { id: 1 };
+      const req = {};
+      const res: any = {
+        locals: { userId: 1 },
         json: jest.fn()
+
       };
       const prismaClientAsAny = prismaClient as any;
-      prismaClientAsAny.song = { findUnique: jest.fn().mockReturnValueOnce(song) };
+      prismaClientAsAny.user = { findUnique: jest.fn().mockReturnValueOnce(user) };
 
-      await authenticationController.getSong(req as any, res as any);
+      await authenticationController.refresh(req as any, res as any);
 
-      expect(res.json).toHaveBeenCalledWith(song);
+      expect(prismaClientAsAny.user.findUnique).toHaveBeenCalledWith({ where: { id: res.locals.userId } });
+      expect(generateTokens).toHaveBeenCalledWith(user.id);
+      expect(res.json).toHaveBeenCalledWith({ accessToken: 'test', refreshToken: 'test' });
     });
   });
 });

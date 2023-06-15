@@ -138,4 +138,49 @@ describe('songs controller', () => {
       expect(prismaClientAsAny.song.delete).toHaveBeenCalledWith({ where: { id: 1 } });
     });
   });
+
+  describe('getCommentsOfSong', () => {
+    it('should return comments and call findMany', async () => {
+      const selectObject = {
+        select: {
+          id: true,
+          user: {
+            select: {
+              first_name: true,
+              last_name: true
+            }
+          }, text: true
+        },
+      };
+      const comments = [{ text: 'hi' }];
+      const req = { params: { id: '1' } };
+      const res = {
+        json: jest.fn()
+      };
+      const prismaClientAsAny = prismaClient as any;
+      prismaClientAsAny.comment = { findMany: jest.fn().mockReturnValueOnce(comments) };
+
+      await songsController.getCommentsOfSong(req as any, res as any);
+
+      expect(res.json).toHaveBeenCalledWith(comments);
+      expect(prismaClientAsAny.comment.findMany).toHaveBeenCalledWith({ where: { song_id: 1 }, select: selectObject });
+    });
+  });
+
+  describe('postCommentToSong', () => {
+    it('should return 201 and call create', async () => {
+      const req = { params: { id: '1' }, body: { text: 'test', addedBy: 1 } };
+      const {text, addedBy} = req.body;
+      const res = {
+        sendStatus: jest.fn()
+      };
+      const prismaClientAsAny = prismaClient as any;
+      prismaClientAsAny.comment = { create: jest.fn() };
+
+      await songsController.postCommentToSong(req as any, res as any);
+
+      expect(res.sendStatus).toHaveBeenCalledWith(201);
+      expect(prismaClientAsAny.comment.create).toHaveBeenCalledWith({ data: { song_id: 1, text, added_by: addedBy } });
+    });
+  });
 });

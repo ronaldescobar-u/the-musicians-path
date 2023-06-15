@@ -11,7 +11,7 @@ async function authenticate(req: Request<{}, {}, AuthenticateDto>, res: Response
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (isPasswordCorrect) {
       const tokens = generateTokens(user.id);
-      return res.status(200).json(tokens);
+      return res.json(tokens);
     }
   }
   return res.sendStatus(401);
@@ -22,7 +22,7 @@ async function refresh(req: Request, res: Response) {
   const user = await prismaClient.user.findUnique({ where: { id } });
   if (user) {
     const tokens = generateTokens(user.id);
-    return res.status(200).json(tokens);
+    return res.json(tokens);
   }
   return res.sendStatus(401);
 }

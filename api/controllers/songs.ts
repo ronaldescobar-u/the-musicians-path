@@ -100,7 +100,8 @@ async function getCommentsOfSong(req: Request, res: Response) {
   const { id } = req.params;
   const comments = await prismaClient.comment.findMany({
     select: {
-      id: true, user: {
+      id: true,
+      user: {
         select: {
           first_name: true,
           last_name: true

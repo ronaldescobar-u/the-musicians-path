@@ -8,14 +8,17 @@ jest.mock('../prisma/client');
 jest.mock('bcrypt');
 
 describe('users controller', () => {
-  describe('createUser', () => {
-    const user = {
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'johndoe@email.com',
-      password: 'password'
-    };
+  const user = {
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'johndoe@email.com',
+    password: 'password'
+  };
+  beforeAll(() => {
+    jest.spyOn(bcrypt, 'hash').mockImplementation(() => new Promise(resolve => resolve('encrypted')));
+  });
 
+  describe('createUser', () => {
     it('should return 201 and call create user and hash password', async () => {
       const req = { body: user };
       const res = {
@@ -29,7 +32,7 @@ describe('users controller', () => {
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
       expect(prismaClientAsAny.user.create).toHaveBeenCalledWith({
-        data: { first_name: firstName, last_name: lastName, email, password }
+        data: { first_name: firstName, last_name: lastName, email, password: 'encrypted' }
       });
       expect(bcrypt.hash).toHaveBeenCalledWith(password, 10);
     });
@@ -37,8 +40,8 @@ describe('users controller', () => {
 
   describe('updateUser', () => {
     it('should return 204 and call update', async () => {
-      const {firstName, lastName} = user;
-      const req = { params: { id: '1' }, body: { name: 'strawberry', genreId: 1 } };
+      const { firstName, password } = user;
+      const req = { params: { id: '1' }, body: { firstName, password } };
       const res = {
         sendStatus: jest.fn()
       };
@@ -48,7 +51,8 @@ describe('users controller', () => {
       await usersController.updateUser(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(204);
-      expect(prismaClientAsAny.user.update).toHaveBeenCalledWith({ where: { id: 1 }, data: { name: 'strawberry', genre_id: 1 } });
+      expect(prismaClientAsAny.user.update).toHaveBeenCalledWith({ where: { id: 1 }, data: { first_name: firstName, password: 'encrypted' } });
+      expect(bcrypt.hash).toHaveBeenCalledWith(password, 10);
     });
   });
 });
