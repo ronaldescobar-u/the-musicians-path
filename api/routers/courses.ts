@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { body } from 'express-validator';
+import { body, oneOf } from 'express-validator';
 import validate from '../utils/validation';
 import { coursesController } from '../controllers';
 
@@ -124,7 +124,7 @@ coursesRouter.route('/:id(\\d+)').get(coursesController.getCourse);
 *                 value: '{ "message": "Unauthorized" }'
 */
 coursesRouter.route('/').post(
-  body('name').notEmpty(),
+  body('name').notEmpty().withMessage("Name is required."),
   validate,
   coursesController.createCourse
 );
@@ -164,7 +164,11 @@ coursesRouter.route('/').post(
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-coursesRouter.route('/:id(\\d+)').put(coursesController.updateCourse);
+coursesRouter.route('/:id(\\d+)').put(
+  oneOf([body('name').exists().notEmpty(), body('description').exists()]),
+  validate,
+  coursesController.updateCourse
+);
 
 /**
 * @openapi

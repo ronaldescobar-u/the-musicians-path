@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 async function verifyToken(req: Request, res: Response, next: NextFunction) {
-  if (process.env.NODE_ENV === "test"){
+  if (process.env.NODE_ENV === "test") {
     return handleTest(res, next);
   }
   const { authorization } = req.headers;
@@ -10,10 +10,14 @@ async function verifyToken(req: Request, res: Response, next: NextFunction) {
   if (token) {
     const { JWT_ACCESS_TOKEN_SECRET, JWT_REFRESH_TOKEN_SECRET } = process.env;
     const secret = req.path === '/refresh' ? JWT_REFRESH_TOKEN_SECRET : JWT_ACCESS_TOKEN_SECRET;
-    const tokenVerified = jwt.verify(token, secret);
-    if (tokenVerified) {
-      res.locals.userId = tokenVerified.sub;
-      return next();
+    try {
+      const tokenVerified = jwt.verify(token, secret);
+      if (tokenVerified) {
+        res.locals.userId = tokenVerified.sub;
+        return next();
+      }
+    } catch (error) {
+      return res.status(401).json({ message: error.message });
     }
   }
   return res.sendStatus(401);

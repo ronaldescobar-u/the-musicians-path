@@ -42,4 +42,74 @@ describe("/courses", () => {
         .expect(404);
     });
   });
+
+  describe("POST /courses", () => {
+    it("respond with 400 response when missing data", async () => {
+      const verifyUsersValidation = (res) => {
+        expect(res.body).toEqual(
+          expect.objectContaining({
+            error: expect.arrayContaining([
+              expect.objectContaining({
+                type: "field",
+                msg: "Name is required.",
+                path: "name",
+                location: "body"
+              }),
+            ])
+          })
+        );
+      };
+      await request(app)
+        .post("/courses")
+        .send({ description: 'test' })
+        .expect(400)
+        .expect(verifyUsersValidation);
+    });
+
+    it("respond with 201 when a course is created", async () => {
+      await request(app)
+        .post("/courses")
+        .set("Accept", "application/json")
+        .send({
+          name: "Course name",
+          description: "Description",
+        })
+        .expect(201);
+    });
+  });
+
+  describe("PUT /courses/{id}", () => {
+    it("respond with 400 response when missing data", async () => {
+      const verifyUsersValidation = (res) => {
+        expect(res.body).toEqual(
+          expect.objectContaining({
+            error: expect.arrayContaining([
+              expect.objectContaining({
+                type: "field",
+                msg: "Name is required.",
+                path: "name",
+                location: "body"
+              }),
+            ])
+          })
+        );
+      };
+      await request(app)
+        .post("/courses")
+        .send({})
+        .expect(400)
+        .expect(verifyUsersValidation);
+    });
+
+    it("respond with 204 when a course is updated", async () => {
+      await request(app)
+        .post("/courses/1")
+        .set("Accept", "application/json")
+        .send({
+          description: "Description",
+        })
+        .expect(201);
+    });
+
+  });
 });
