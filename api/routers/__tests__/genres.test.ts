@@ -1,11 +1,11 @@
 import request from 'supertest';
 import app from '../../app';
 
-describe("/artists", () => {
-  describe("GET /artists", () => {
-    it("should respond with json containing a list of artists", async () => {
+describe("/genres", () => {
+  describe("GET /genres", () => {
+    it("should respond with json containing a list of genres", async () => {
       await request(app)
-        .get("/artists")
+        .get("/genres")
         .set("Accept", "application/json")
         .expect("Content-type", /json/)
         .expect(200)
