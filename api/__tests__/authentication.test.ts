@@ -17,7 +17,7 @@ describe('authentication controller', () => {
     const credentials = { email: 'test@test.com', password: 'password' };
     const { email, password } = credentials;
     beforeEach(() => {
-      jest.resetAllMocks();
+      jest.clearAllMocks();
     })
 
     it('should return 401 if user with email does not exist', async () => {
@@ -61,6 +61,7 @@ describe('authentication controller', () => {
       jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => {
         return new Promise((resolve) => resolve(true));
       });
+      
 
       await authenticationController.authenticate(req as any, res as any);
 

@@ -63,7 +63,7 @@ describe('courses controller', () => {
       await coursesController.getCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(404);
-      expect(prismaClientAsAny.course.findunique).toHaveBeenCalled();
+      expect(prismaClientAsAny.course.findUnique).toHaveBeenCalled();
     });
 
     it('should return course data', async () => {
@@ -78,7 +78,7 @@ describe('courses controller', () => {
       await coursesController.getCourse(req as any, res as any);
 
       expect(res.json).toHaveBeenCalledWith(course);
-      expect(prismaClientAsAny.course.findunique).toHaveBeenCalled();
+      expect(prismaClientAsAny.course.findUnique).toHaveBeenCalled();
     });
   });
 
@@ -136,7 +136,7 @@ describe('courses controller', () => {
   describe('getRatingsOfCourse', () => {
     it('should return comments and call findMany', async () => {
       const selectObject = {
-        select: { id: true, stars: true, text: true, user: { select: { first_name: true, last_name: true } } },
+        id: true, stars: true, text: true, user: { select: { first_name: true, last_name: true } },
       };
       const comments = [{ text: 'hi' }];
       const req = { params: { id: '1' } };
@@ -166,7 +166,7 @@ describe('courses controller', () => {
       await coursesController.submitRatingToCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.rating.create).toHaveBeenCalledWith({ data: { song_id: 1, stars, text, added_by: addedBy } });
+      expect(prismaClientAsAny.rating.create).toHaveBeenCalledWith({ data: { course_id: 1, stars, text, added_by: addedBy } });
     });
   });
 
@@ -183,7 +183,7 @@ describe('courses controller', () => {
       await coursesController.enrollUserToCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.course_user.create).toHaveBeenCalledWith({ data: { course_id: 1, user_id: userId, enrollment_date: enrollmentDate } });
+      expect(prismaClientAsAny.course_user.create).toHaveBeenCalledWith({ data: { course_id: 1, user_id: userId, enrollment_date: new Date(enrollmentDate) } });
     });
   });
 
@@ -200,7 +200,7 @@ describe('courses controller', () => {
       await coursesController.addSongToCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.course_song.create).toHaveBeenCalledWith({ data: { courseId: 1, song_id: songId, order, added_by: addedBy } });
+      expect(prismaClientAsAny.course_song.create).toHaveBeenCalledWith({ data: { course_id: 1, song_id: songId, order, added_by: addedBy, is_approved: true } });
     });
   });
 });
