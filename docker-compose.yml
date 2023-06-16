@@ -26,6 +26,7 @@ services:
       dockerfile: Dockerfile.local
     volumes:
       - ./api:/app
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 3001:3001
     depends_on:
