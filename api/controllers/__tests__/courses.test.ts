@@ -1,6 +1,6 @@
 import { describe, jest, it, expect } from '@jest/globals';
-import { coursesController } from '../controllers';
-import prismaClient from '../prisma/client';
+import { coursesController } from '..';
+import prismaClient from '../../prisma/client';
 
 jest.mock('@prisma/client');
 jest.mock('../prisma/client')

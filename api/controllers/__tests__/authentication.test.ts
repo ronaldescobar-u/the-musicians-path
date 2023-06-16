@@ -1,8 +1,8 @@
 import { describe, jest, it, expect } from '@jest/globals';
-import { authenticationController } from '../controllers';
-import prismaClient from '../prisma/client';
+import { authenticationController } from '..';
+import prismaClient from '../../prisma/client';
 import bcrypt from 'bcrypt';
-import generateTokens from '../utils/generateTokens';
+import generateTokens from '../../utils/generateTokens';
 jest.mock('../utils/generateTokens', () => ({
   __esModule: true,
   default: jest.fn(() => ({ accessToken: 'test', refreshToken: 'test' })),
