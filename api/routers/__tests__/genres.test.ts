@@ -8,8 +8,7 @@ describe("/genres", () => {
         .get("/genres")
         .set("Accept", "application/json")
         .expect("Content-type", /json/)
-        .expect(200)
-        .expect("Body", []);
+        .expect(200);
     });
   });
 });

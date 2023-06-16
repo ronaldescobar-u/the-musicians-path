@@ -14,16 +14,18 @@ async function getSongs(req: Request<{}, {}, {}, SongsQueryParams>, res: Respons
   if (searchQuery) {
     whereClause = { ...whereClause, name: { contains: searchQuery, mode: 'insensitive' } };
   }
-  const courses = await prismaClient.song.findMany({
+  const songs = await prismaClient.song.findMany({
     where: whereClause,
     select: {
       id: true,
+      name: true,
       artist: true,
       genre: true,
       difficulty: true
-    }
+    },
   });
-  res.json(courses);
+  const parsedSongs = songs.map(song => ({ ...song, artist: song.artist.name, genre: song.genre.name }));
+  res.json(parsedSongs);
 }
 
 async function getSong(req: Request, res: Response) {
@@ -54,7 +56,16 @@ async function getSong(req: Request, res: Response) {
   if (!song) {
     return res.sendStatus(404);
   }
-  res.json(song);
+  const parsedSong = {
+    id: song.id,
+    name: song.name,
+    artist: song.artist.name,
+    genre: song.genre.name,
+    difficulty: song.difficulty,
+    addedBy: `${song.user.first_name} ${song.user.last_name}`,
+    files: song.song_file.map(({ id, file_type, content }) => ({ id, content, fileTypeId: file_type.id, fileType: file_type.type }))
+  }
+  res.json(parsedSong);
 }
 
 async function createSong(req: Request<{}, {}, Song>, res: Response) {

@@ -381,4 +381,6 @@ coursesRouter.route('/:id(\\d+)/songs').post(
   coursesController.addSongToCourse
 );
 
+// put
+
 export default coursesRouter;
