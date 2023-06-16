@@ -5,7 +5,6 @@ interface Song {
   artistId: number;
   genreId: number;
   difficulty: number;
-  addedBy: number;
   files: SongFile[];
 }
 

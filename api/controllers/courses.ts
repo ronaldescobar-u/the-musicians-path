@@ -52,9 +52,9 @@ async function getCourse(req: Request, res: Response) {
 }
 
 async function createCourse(req: Request<{}, {}, Course>, res: Response) {
-  const { name, description, addedBy } = req.body;
+  const { name, description } = req.body;
   await prismaClient.course.create({
-    data: { name, description, added_by: addedBy }
+    data: { name, description, added_by: res.locals.userId }
   })
   res.sendStatus(201);
 }
@@ -88,31 +88,31 @@ async function getRatingsOfCourse(req: Request, res: Response) {
 
 async function submitRatingToCourse(req: Request<{ id: string }, {}, Rating>, res: Response) {
   const { id } = req.params;
-  const { stars, text, addedBy } = req.body;
+  const { stars, text } = req.body;
   await prismaClient.rating.create({
-    data: { course_id: parseInt(id), stars, text, added_by: addedBy }
+    data: { course_id: parseInt(id), stars, text, added_by: res.locals.userId }
   })
   res.sendStatus(201);
 }
 
 async function enrollUserToCourse(req: Request<{ id: string }, {}, CourseUser>, res: Response) {
   const { id } = req.params;
-  const { userId, enrollmentDate } = req.body;
+  const { enrollmentDate } = req.body;
   await prismaClient.course_user.create({
-    data: { course_id: parseInt(id), user_id: userId, enrollment_date: new Date(enrollmentDate) }
-  })
+    data: { course_id: parseInt(id), user_id: res.locals.userId, enrollment_date: new Date(enrollmentDate) }
+  });
   res.sendStatus(201);
 }
 
 async function addSongToCourse(req: Request<{ id: string }, {}, CourseSong>, res: Response) {
   const { id } = req.params;
-  const { songId, order, addedBy } = req.body;
+  const { songId, order } = req.body;
   await prismaClient.course_song.create({
     data: {
       course_id: parseInt(id),
       song_id: songId,
       order,
-      added_by: addedBy,
+      added_by: res.locals.userId,
       is_approved: true
     }
   })

@@ -20,7 +20,7 @@ async function verifyToken(req: Request, res: Response, next: NextFunction) {
 }
 
 const handleTest = (res: Response, next: NextFunction) => {
-  res.locals.user = 1;
+  res.locals.userId = 1;
   return next();
 };
 

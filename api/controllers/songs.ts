@@ -69,13 +69,13 @@ async function getSong(req: Request, res: Response) {
 }
 
 async function createSong(req: Request<{}, {}, Song>, res: Response) {
-  const { name, artistId, genreId, difficulty, addedBy, files } = req.body;
+  const { name, artistId, genreId, difficulty, files } = req.body;
   let createData: any = {
     name,
     artist_id: artistId,
     genre_id: genreId,
     difficulty,
-    added_by: addedBy,
+    added_by: res.locals.userId,
   }
   if (files && files.length) {
     createData = {
@@ -126,9 +126,9 @@ async function getCommentsOfSong(req: Request, res: Response) {
 
 async function postCommentToSong(req: Request<{ id: string }, {}, Comment>, res: Response) {
   const { id } = req.params;
-  const { text, addedBy } = req.body;
+  const { text } = req.body;
   await prismaClient.comment.create({
-    data: { song_id: parseInt(id), text, added_by: addedBy }
+    data: { song_id: parseInt(id), text, added_by: res.locals.userId }
   })
   res.sendStatus(201);
 }

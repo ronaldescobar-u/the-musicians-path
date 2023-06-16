@@ -130,7 +130,6 @@ songsRouter.route('/:id(\\d+)').get(songsController.getSong);
 *               - artistId
 *               - genreId
 *               - difficulty
-*               - addedBy
 *             properties:
 *               name:
 *                 type: string
@@ -139,8 +138,6 @@ songsRouter.route('/:id(\\d+)').get(songsController.getSong);
 *               genreId:
 *                 type: integer
 *               difficulty:
-*                 type: integer
-*               addedBy:
 *                 type: integer
 *               files:
 *                 type: array
@@ -168,7 +165,6 @@ songsRouter.route('/').post(
   body('artistId').notEmpty().isInt(),
   body('genreId').notEmpty().isInt(),
   body('difficulty').isInt({ min: 1, max: 10 }),
-  body('addedBy').notEmpty().isInt(),
   body('files').isArray().isLength({ min: 1 }),
   body('files.*.fileTypeId').notEmpty().isInt(),
   body('files.*.content').notEmpty(),
@@ -307,10 +303,8 @@ songsRouter.route('/:id(\\d+)/comments').get(songsController.getCommentsOfSong);
 *           schema:
 *             type: object
 *             required:
-*               - addedBy
+*               - text
 *             properties:
-*               addedBy:
-*                 type: number
 *               text:
 *                 type: string
 *     responses:
@@ -326,7 +320,6 @@ songsRouter.route('/:id(\\d+)/comments').get(songsController.getCommentsOfSong);
 *                 value: '{ "message": "Unauthorized" }'
 */
 songsRouter.route('/:id(\\d+)/comments').post(
-  body('addedBy').notEmpty().isInt(),
   body('text').notEmpty(),
   validate,
   songsController.postCommentToSong

@@ -106,14 +106,11 @@ coursesRouter.route('/:id(\\d+)').get(coursesController.getCourse);
 *             type: object
 *             required:
 *               - name
-*               - addedBy
 *             properties:
 *               name:
 *                 type: string
 *               description:
 *                 type: string
-*               addedBy:
-*                 type: number
 *     responses:
 *       201:
 *         description: Created
@@ -128,7 +125,6 @@ coursesRouter.route('/:id(\\d+)').get(coursesController.getCourse);
 */
 coursesRouter.route('/').post(
   body('name').notEmpty(),
-  body('addedBy').notEmpty().isInt(),
   validate,
   coursesController.createCourse
 );
@@ -263,11 +259,8 @@ coursesRouter.route('/:id(\\d+)/ratings').get(coursesController.getRatingsOfCour
 *           schema:
 *             type: object
 *             required:
-*               - addedBy
 *               - stars
 *             properties:
-*               addedBy:
-*                 type: number
 *               stars:
 *                 type: number
 *               text:
@@ -285,7 +278,6 @@ coursesRouter.route('/:id(\\d+)/ratings').get(coursesController.getRatingsOfCour
 *                 value: '{ "message": "Unauthorized" }'
 */
 coursesRouter.route('/:id(\\d+)/ratings').post(
-  body('addedBy').notEmpty().isInt(),
   body('stars').notEmpty().isFloat({ min: 0, max: 5 }),
   validate,
   coursesController.submitRatingToCourse
@@ -308,11 +300,8 @@ coursesRouter.route('/:id(\\d+)/ratings').post(
 *           schema:
 *             type: object
 *             required:
-*               - userId
 *               - enrollmentDate
 *             properties:
-*               userId:
-*                 type: number
 *               enrollmentDate:
 *                 type: string
 *     responses:
@@ -328,7 +317,6 @@ coursesRouter.route('/:id(\\d+)/ratings').post(
 *                 value: '{ "message": "Unauthorized" }'
 */
 coursesRouter.route('/:id(\\d+)/users').post(
-  body('userId').notEmpty().isInt(),
   body('enrollmentDate').notEmpty().isDate(),
   validate,
   coursesController.enrollUserToCourse
@@ -353,13 +341,10 @@ coursesRouter.route('/:id(\\d+)/users').post(
 *             required:
 *               - songId
 *               - order
-*               - addedBy
 *             properties:
 *               songId:
 *                 type: number
 *               order:
-*                 type: number
-*               addedBy:
 *                 type: number
 *     responses:
 *       201:
@@ -376,11 +361,8 @@ coursesRouter.route('/:id(\\d+)/users').post(
 coursesRouter.route('/:id(\\d+)/songs').post(
   body('songId').notEmpty().isInt(),
   body('order').notEmpty().isInt(),
-  body('addedBy').notEmpty().isInt(),
   validate,
   coursesController.addSongToCourse
 );
-
-// put
 
 export default coursesRouter;
