@@ -3,7 +3,7 @@ import { songsController } from '..';
 import prismaClient from '../../prisma/client';
 
 jest.mock('@prisma/client');
-jest.mock('../prisma/client')
+jest.mock('../../prisma/client');
 
 describe('songs controller', () => {
   describe('getSongs', () => {

@@ -3,7 +3,7 @@ import { genresController } from '..';
 import prismaClient from '../../prisma/client';
 
 jest.mock('@prisma/client');
-jest.mock('../prisma/client')
+jest.mock('../../prisma/client');
 
 describe('genres controller', () => {
   describe('getGenres', () => {

@@ -3,13 +3,13 @@ import { authenticationController } from '..';
 import prismaClient from '../../prisma/client';
 import bcrypt from 'bcrypt';
 import generateTokens from '../../utils/generateTokens';
-jest.mock('../utils/generateTokens', () => ({
+jest.mock('../../utils/generateTokens', () => ({
   __esModule: true,
   default: jest.fn(() => ({ accessToken: 'test', refreshToken: 'test' })),
 }));
 
 jest.mock('@prisma/client');
-jest.mock('../prisma/client')
+jest.mock('../../prisma/client');
 jest.mock('bcrypt');
 
 describe('authentication controller', () => {

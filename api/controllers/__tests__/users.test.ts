@@ -4,7 +4,7 @@ import prismaClient from '../../prisma/client';
 import bcrypt from 'bcrypt';
 
 jest.mock('@prisma/client');
-jest.mock('../prisma/client');
+jest.mock('../../prisma/client');
 jest.mock('bcrypt');
 
 describe('users controller', () => {

@@ -3,7 +3,7 @@ import { artistsController } from '..';
 import prismaClient from '../../prisma/client';
 
 jest.mock('@prisma/client');
-jest.mock('../prisma/client')
+jest.mock('../../prisma/client');
 
 describe('artists controller', () => {
   describe('getArtists', () => {

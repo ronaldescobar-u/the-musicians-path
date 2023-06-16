@@ -3,7 +3,7 @@ import { coursesController } from '..';
 import prismaClient from '../../prisma/client';
 
 jest.mock('@prisma/client');
-jest.mock('../prisma/client')
+jest.mock('../../prisma/client');
 
 describe('courses controller', () => {
   describe('getCourses', () => {
