@@ -62,19 +62,33 @@ async function createCourse(req: Request<{}, {}, Course>, res: Response) {
 async function updateCourse(req: Request<{ id: string }, {}, Course>, res: Response) {
   const { name, description } = req.body;
   const { id } = req.params;
-  await prismaClient.course.update({
-    where: { id: parseInt(id) },
-    data: { name, description }
-  })
-  res.sendStatus(204);
+  try {
+    await prismaClient.course.update({
+      where: { id: parseInt(id) },
+      data: { name, description }
+    });
+  } catch (error) {
+    if (error.code === 'P2025' && error.meta?.cause === 'Record to update not found.') {
+      return res.status(404).json({ message: error.meta.cause })
+    }
+    return res.sendStatus(500);
+  }
+  return res.sendStatus(204);
 }
 
 async function deleteCourse(req: Request, res: Response) {
   const { id } = req.params;
-  await prismaClient.course.delete({
-    where: { id: parseInt(id) }
-  });
-  res.sendStatus(204);
+  try {
+    await prismaClient.course.delete({
+      where: { id: parseInt(id) }
+    });
+  } catch (error) {
+    if (error.code === 'P2025' && error.meta?.cause === 'Record to delete does not exist.') {
+      return res.status(404).json({ message: error.meta.cause })
+    }
+    return res.sendStatus(500);
+  }
+  return res.sendStatus(204);
 }
 
 async function getRatingsOfCourse(req: Request, res: Response) {

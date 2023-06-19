@@ -1,0 +1,18 @@
+name: Verify API Unit Tests
+on:
+  pull_request:
+    paths:
+      - 'api/**'
+defaults:
+  run:
+    working-directory: ./api
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎 Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: npm i
+      - name: Test
+        run: npm run test:unit

@@ -85,31 +85,52 @@ describe("/courses", () => {
           expect.objectContaining({
             error: expect.arrayContaining([
               expect.objectContaining({
-                type: "field",
-                msg: "Name is required.",
-                path: "name",
-                location: "body"
+                type: "alternative_grouped",
+                msg: "Please update at least one of the fields (name, description).",
               }),
             ])
           })
         );
       };
       await request(app)
-        .post("/courses")
+        .put("/courses/1")
         .send({})
         .expect(400)
         .expect(verifyUsersValidation);
     });
 
-    it("respond with 204 when a course is updated", async () => {
+    it("should respond with 404 for course not found", async () => {
       await request(app)
-        .post("/courses/1")
+        .put("/courses/100")
         .set("Accept", "application/json")
         .send({
           description: "Description",
         })
-        .expect(201);
+        .expect(404);
     });
 
+    it("respond with 204 when a course is updated", async () => {
+      await request(app)
+        .put("/courses/1")
+        .set("Accept", "application/json")
+        .send({
+          description: "Description",
+        })
+        .expect(204);
+    });
+  });
+
+  describe("DELETE /courses/{id}", () => {
+    it("should respond with 404 for course not found", async () => {
+      await request(app)
+        .delete("/courses/100")
+        .expect(404);
+    });
+
+    it("respond with 204 when a course is deleted", async () => {
+      await request(app)
+        .delete("/courses/2")
+        .expect(204);
+    });
   });
 });

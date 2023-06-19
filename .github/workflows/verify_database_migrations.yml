@@ -1,0 +1,14 @@
+name: Verify Database Migrations
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "database/**"
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: execute flyway in docker 🐳
+        run: docker-compose up --abort-on-container-exit
