@@ -45,4 +45,18 @@ describe("/songs", () => {
         .expect(404);
     });
   });
+
+  describe("DELETE /songs/{id}", () => {
+    it("should respond with 404 for song not found", async () => {
+      await request(app)
+        .delete("/songs/100")
+        .expect(404);
+    });
+
+    it("respond with 204 when a song is deleted", async () => {
+      await request(app)
+        .delete("/songs/2")
+        .expect(204);
+    });
+  });
 });

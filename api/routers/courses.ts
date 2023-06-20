@@ -165,7 +165,10 @@ coursesRouter.route('/').post(
 *                 value: '{ "message": "Unauthorized" }'
 */
 coursesRouter.route('/:id(\\d+)').put(
-  oneOf([body('name').exists().notEmpty(), body('description').exists()], {message: 'Please update at least one of the fields (name, description).'}),
+  oneOf(
+    [body('name').exists().notEmpty(), body('description').exists()],
+    { message: 'Please update at least one of the fields (name, description).' }
+  ),
   validate,
   coursesController.updateCourse
 );
