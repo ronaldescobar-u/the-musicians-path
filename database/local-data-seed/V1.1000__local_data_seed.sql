@@ -26,3 +26,9 @@ values ('The Beatles: Begginers Course', 'Only easy songs to play by The Beatles
 
 insert into course_song(course_id, song_id, "order", added_by)
 values (1, 1, 1, 1), (1, 2, 2, 1), (1, 3, 3, 1);
+
+insert into comment(song_id, added_by, text)
+values (1, 1, 'Easy song'), (1, 1, 'Fun to play!');
+
+insert into rating(course_id, added_by, stars, text)
+values (1, 1, 5, 'Amazing course'), (1, 1, 4, 'I would like more songs on it');

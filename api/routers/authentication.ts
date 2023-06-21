@@ -43,8 +43,8 @@ const authenticationRouter = Router();
 *                 value: '{ "message": "Unauthorized" }'
 */
 authenticationRouter.route('/').post(
-  body('email').notEmpty().isEmail(),
-  body('password').notEmpty(),
+  body('email').notEmpty().withMessage('Email is required.').isEmail().withMessage('Invalid email.'),
+  body('password').notEmpty().withMessage('Password is required.'),
   validate,
   authenticationController.authenticate
 );

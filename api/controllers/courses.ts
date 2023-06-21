@@ -103,33 +103,54 @@ async function getRatingsOfCourse(req: Request, res: Response) {
 async function submitRatingToCourse(req: Request<{ id: string }, {}, Rating>, res: Response) {
   const { id } = req.params;
   const { stars, text } = req.body;
-  await prismaClient.rating.create({
-    data: { course_id: parseInt(id), stars, text, added_by: res.locals.userId }
-  })
-  res.sendStatus(201);
+  try {
+    await prismaClient.rating.create({
+      data: { course_id: parseInt(id), stars, text, added_by: res.locals.userId }
+    });
+  } catch (error) {
+    if (error.code === 'P2003' && error.meta?.field_name === 'rating_course_id_course_id_fk (index)') {
+      return res.status(404).json({ message: 'Course does not exist.' });
+    }
+    return res.sendStatus(500);
+  }
+  return res.sendStatus(201);
 }
 
 async function enrollUserToCourse(req: Request<{ id: string }, {}, CourseUser>, res: Response) {
   const { id } = req.params;
   const { enrollmentDate } = req.body;
-  await prismaClient.course_user.create({
-    data: { course_id: parseInt(id), user_id: res.locals.userId, enrollment_date: new Date(enrollmentDate) }
-  });
-  res.sendStatus(201);
+  try {
+    await prismaClient.course_user.create({
+      data: { course_id: parseInt(id), user_id: res.locals.userId, enrollment_date: new Date(enrollmentDate) }
+    });
+  } catch (error) {
+    if (error.code === 'P2003' && error.meta?.field_name === 'course_user_course_id_course_id_fk (index)') {
+      return res.status(404).json({ message: 'Course does not exist.' });
+    }
+    return res.sendStatus(500);
+  }
+  return res.sendStatus(201);
 }
 
 async function addSongToCourse(req: Request<{ id: string }, {}, CourseSong>, res: Response) {
   const { id } = req.params;
   const { songId, order } = req.body;
-  await prismaClient.course_song.create({
-    data: {
-      course_id: parseInt(id),
-      song_id: songId,
-      order,
-      added_by: res.locals.userId,
-      is_approved: true
+  try {
+    await prismaClient.course_song.create({
+      data: {
+        course_id: parseInt(id),
+        song_id: songId,
+        order,
+        added_by: res.locals.userId,
+        is_approved: true
+      }
+    });
+  } catch (error) {
+    if (error.code === 'P2003' && error.meta?.field_name === 'course_song_course_id_course_id_fk (index)') {
+      return res.status(404).json({ message: 'Course does not exist.' });
     }
-  })
+    return res.sendStatus(500);
+  }
   res.sendStatus(201);
 }
 

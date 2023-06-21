@@ -285,7 +285,7 @@ coursesRouter.route('/:id(\\d+)/ratings').get(coursesController.getRatingsOfCour
 *                 value: '{ "message": "Unauthorized" }'
 */
 coursesRouter.route('/:id(\\d+)/ratings').post(
-  body('stars').notEmpty().isFloat({ min: 0, max: 5 }),
+  body('stars').isFloat({ min: 0, max: 5 }).withMessage('Stars should be a number between 0 and 5.'),
   validate,
   coursesController.submitRatingToCourse
 );
@@ -324,7 +324,7 @@ coursesRouter.route('/:id(\\d+)/ratings').post(
 *                 value: '{ "message": "Unauthorized" }'
 */
 coursesRouter.route('/:id(\\d+)/users').post(
-  body('enrollmentDate').notEmpty().isDate(),
+  body('enrollmentDate').isDate().withMessage('Invalid date'),
   validate,
   coursesController.enrollUserToCourse
 );
@@ -366,8 +366,8 @@ coursesRouter.route('/:id(\\d+)/users').post(
 *                 value: '{ "message": "Unauthorized" }'
 */
 coursesRouter.route('/:id(\\d+)/songs').post(
-  body('songId').notEmpty().isInt(),
-  body('order').notEmpty().isInt(),
+  body('songId').isInt().withMessage('Song ID should be int.'),
+  body('order').isInt().withMessage('Order should be int.'),
   validate,
   coursesController.addSongToCourse
 );

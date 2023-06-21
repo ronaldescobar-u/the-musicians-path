@@ -44,10 +44,14 @@ const usersRouter = Router();
 *                 value: '{ "message": "Unauthorized" }'
 */
 usersRouter.route('/').post(
-  body('firstName').notEmpty(),
-  body('lastName').notEmpty(),
-  body('email').notEmpty().isEmail(),
-  body('password').notEmpty().isStrongPassword({ minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 }),
+  body('firstName').notEmpty().withMessage('First name is required.'),
+  body('lastName').notEmpty().withMessage('Last name is required.'),
+  body('email').notEmpty().withMessage('Email is required.').isEmail().withMessage('Email is invalid.'),
+  body('password')
+    .notEmpty()
+    .withMessage('Password is required.')
+    .isStrongPassword({ minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })
+    .withMessage('Password should have at least 8 characters and at least one: uppercase, lowercase, number and symbol.'),
   validate,
   usersController.createUser
 );

@@ -133,4 +133,141 @@ describe("/courses", () => {
         .expect(204);
     });
   });
+
+  describe("GET /courses/{id}/ratings", () => {
+    it("should respond with json containing ratings of the course with the given id", async () => {
+      await request(app)
+        .get("/courses/1/ratings")
+        .set("Accept", "application/json")
+        .expect("Content-type", /json/)
+        .expect(200);
+    });
+
+    // it("should respond with 404 for course not found", async () => {
+    //   await request(app)
+    //     .get("/course/100/ratings")
+    //     .set("Accept", "application/json")
+    //     .expect(404);
+    // });
+  });
+
+  describe("POST /courses/{id}/ratings", () => {
+    it("respond with 400 response when missing data", async () => {
+      const verifyCommentValidation = (res) => {
+        expect(res.body).toEqual(
+          expect.objectContaining({
+            error: expect.arrayContaining([
+              expect.objectContaining({
+                type: "field",
+                msg: "Stars should be a number between 0 and 5.",
+                path: "stars",
+                location: "body"
+              }),
+            ])
+          })
+        );
+      };
+      await request(app)
+        .post("/courses/1/ratings")
+        .send({ text: 'good course' })
+        .expect(400)
+        .expect(verifyCommentValidation);
+    });
+
+    it("respond with 404 for non existant course", async () => {
+      await request(app)
+        .post("/courses/100/ratings")
+        .set("Accept", "application/json")
+        .send({ text: 'Test comment' })
+        .expect(404);
+    });
+
+    it("respond with 201 when a rating is created", async () => {
+      await request(app)
+        .post("/courses/1/ratings")
+        .set("Accept", "application/json")
+        .send({ text: 'Test rating', stars: 4 })
+        .expect(201);
+    });
+  });
+
+  describe("POST /courses/{id}/users", () => {
+    it("respond with 400 response when missing data", async () => {
+      const verifyCommentValidation = (res) => {
+        expect(res.body).toEqual(
+          expect.objectContaining({
+            error: expect.arrayContaining([
+              expect.objectContaining({
+                type: "field",
+                msg: "Invalid date.",
+                path: "enrollmentDate",
+                location: "body"
+              }),
+            ])
+          })
+        );
+      };
+      await request(app)
+        .post("/courses/1/users")
+        .send({ text: 'good course' })
+        .expect(400)
+        .expect(verifyCommentValidation);
+    });
+
+    it("respond with 404 for non existant course", async () => {
+      await request(app)
+        .post("/courses/100/users")
+        .set("Accept", "application/json")
+        .send({ text: 'Test comment' })
+        .expect(404);
+    });
+
+    it("respond with 201 when a user is added to the course", async () => {
+      await request(app)
+        .post("/courses/1/users")
+        .set("Accept", "application/json")
+        .send({ text: 'Test rating', stars: 4 })
+        .expect(201);
+    });
+  });
+
+  describe("POST /courses/{id}/songs", () => {
+    it("respond with 400 response when missing data", async () => {
+      const verifyCommentValidation = (res) => {
+        expect(res.body).toEqual(
+          expect.objectContaining({
+            error: expect.arrayContaining([
+              expect.objectContaining({
+                type: "field",
+                msg: "Invalid date.",
+                path: "enrollmentDate",
+                location: "body"
+              }),
+            ])
+          })
+        );
+      };
+      await request(app)
+        .post("/courses/1/songs")
+        .send({})
+        .expect(400)
+        .expect(verifyCommentValidation);
+    });
+
+    it("respond with 404 for non existant course", async () => {
+      await request(app)
+        .post("/courses/100/songs")
+        .set("Accept", "application/json")
+        .send({ songId: 1, order: 2 })
+        .expect(404);
+    });
+
+    it("respond with 201 when a user is added to the course", async () => {
+      await request(app)
+        .post("/courses/1/songs")
+        .set("Accept", "application/json")
+        .send({ songId: 1, order: 2 })
+        .expect(201);
+    });
+  });
 });

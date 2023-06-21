@@ -92,19 +92,33 @@ async function createSong(req: Request<{}, {}, Song>, res: Response) {
 async function updateSong(req: Request<{ id: string }, {}, Song>, res: Response) {
   const { name, artistId, genreId, difficulty } = req.body;
   const { id } = req.params;
-  await prismaClient.song.update({
-    where: { id: parseInt(id) },
-    data: { name, artist_id: artistId, genre_id: genreId, difficulty }
-  })
-  res.sendStatus(204);
+  try {
+    await prismaClient.song.update({
+      where: { id: parseInt(id) },
+      data: { name, artist_id: artistId, genre_id: genreId, difficulty }
+    });
+  } catch (error) {
+    if (error.code === 'P2025' && error.meta?.cause === 'Record to update not found.') {
+      return res.status(404).json({ message: error.meta.cause })
+    }
+    return res.sendStatus(500);
+  }
+  return res.sendStatus(204);
 }
 
 async function deleteSong(req: Request, res: Response) {
   const { id } = req.params;
-  await prismaClient.song.delete({
-    where: { id: parseInt(id) }
-  });
-  res.sendStatus(204);
+  try {
+    await prismaClient.song.delete({
+      where: { id: parseInt(id) }
+    });
+  } catch (error) {
+    if (error.code === 'P2025' && error.meta?.cause === 'Record to delete does not exist.') {
+      return res.status(404).json({ message: error.meta.cause })
+    }
+    return res.sendStatus(500);
+  }
+  return res.sendStatus(204);
 }
 
 async function getCommentsOfSong(req: Request, res: Response) {
@@ -127,10 +141,17 @@ async function getCommentsOfSong(req: Request, res: Response) {
 async function postCommentToSong(req: Request<{ id: string }, {}, Comment>, res: Response) {
   const { id } = req.params;
   const { text } = req.body;
-  await prismaClient.comment.create({
-    data: { song_id: parseInt(id), text, added_by: res.locals.userId }
-  })
-  res.sendStatus(201);
+  try {
+    await prismaClient.comment.create({
+      data: { song_id: parseInt(id), text, added_by: res.locals.userId }
+    });
+  } catch (error) {
+    if (error.code === 'P2003' && error.meta?.field_name === 'comment_song_id_song_id_fk (index)') {
+      return res.status(404).json({ message: 'Song does not exist.' })
+    }
+    return res.sendStatus(500);
+  }
+  return res.sendStatus(201);
 }
 
 export default {

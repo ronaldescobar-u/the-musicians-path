@@ -1,5 +1,5 @@
 import { Request, Router } from 'express';
-import { body, query } from 'express-validator';
+import { body, oneOf, query } from 'express-validator';
 import validate from '../utils/validation';
 import { songsController } from '../controllers';
 
@@ -161,13 +161,29 @@ songsRouter.route('/:id(\\d+)').get(songsController.getSong);
 *                 value: '{ "message": "Unauthorized" }'
 */
 songsRouter.route('/').post(
-  body('name').notEmpty(),
-  body('artistId').notEmpty().isInt(),
-  body('genreId').notEmpty().isInt(),
-  body('difficulty').isInt({ min: 1, max: 10 }),
-  body('files').isArray().isLength({ min: 1 }),
-  body('files.*.fileTypeId').notEmpty().isInt(),
-  body('files.*.content').notEmpty(),
+  body('name').notEmpty().withMessage('Name is required.'),
+  body('artistId')
+    .notEmpty()
+    .withMessage('Artist ID is required.')
+    .isInt()
+    .withMessage('Artist ID should be int.'),
+  body('genreId')
+    .notEmpty()
+    .withMessage('Genre ID is required.')
+    .isInt()
+    .withMessage('Genre ID should be int.'),
+  body('difficulty')
+    .isInt({ min: 1, max: 10 })
+    .withMessage('Difficulty should be int and it should be between 1 to 10.'),
+  body('files')
+    .isArray({ min: 1 })
+    .withMessage('Files should be array with at least one element.'),
+  body('files.*.fileTypeId')
+    .notEmpty()
+    .withMessage('File type ID is required.')
+    .isInt()
+    .withMessage('File type ID should be int.'),
+  body('files.*.content').notEmpty().withMessage('Content is required.'),
   validate,
   songsController.createSong
 );
@@ -210,7 +226,14 @@ songsRouter.route('/').post(
 *                 summary: An example JSON response
 *                 value: '{ "message": "Unauthorized" }'
 */
-songsRouter.route('/:id(\\d+)').put(songsController.updateSong);
+songsRouter.route('/:id(\\d+)').put(
+  oneOf(
+    [body('name').exists().notEmpty(), body('artistId').exists().notEmpty()],
+    { message: 'Please update at least one of the fields (name, description).' }
+  ),
+  validate,
+  songsController.updateSong
+);
 
 /**
 * @openapi
@@ -320,7 +343,7 @@ songsRouter.route('/:id(\\d+)/comments').get(songsController.getCommentsOfSong);
 *                 value: '{ "message": "Unauthorized" }'
 */
 songsRouter.route('/:id(\\d+)/comments').post(
-  body('text').notEmpty(),
+  body('text').notEmpty().withMessage('Text is required.'),
   validate,
   songsController.postCommentToSong
 );
