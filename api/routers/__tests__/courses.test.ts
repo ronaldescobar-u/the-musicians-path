@@ -271,3 +271,4 @@ describe("/courses", () => {
     });
   });
 });
+// todo vue app, terminar lo otro del ws pa decirle a diego
