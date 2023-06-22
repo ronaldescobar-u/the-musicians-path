@@ -178,7 +178,7 @@ describe("/courses", () => {
       await request(app)
         .post("/courses/100/ratings")
         .set("Accept", "application/json")
-        .send({ text: 'Test comment' })
+        .send({ text: 'Test rating', stars: 4 })
         .expect(404);
     });
 
@@ -192,33 +192,11 @@ describe("/courses", () => {
   });
 
   describe("POST /courses/{id}/users", () => {
-    it("respond with 400 response when missing data", async () => {
-      const verifyCommentValidation = (res) => {
-        expect(res.body).toEqual(
-          expect.objectContaining({
-            error: expect.arrayContaining([
-              expect.objectContaining({
-                type: "field",
-                msg: "Invalid date.",
-                path: "enrollmentDate",
-                location: "body"
-              }),
-            ])
-          })
-        );
-      };
-      await request(app)
-        .post("/courses/1/users")
-        .send({ text: 'good course' })
-        .expect(400)
-        .expect(verifyCommentValidation);
-    });
-
     it("respond with 404 for non existant course", async () => {
       await request(app)
         .post("/courses/100/users")
         .set("Accept", "application/json")
-        .send({ text: 'Test comment' })
+        .send({})
         .expect(404);
     });
 
@@ -226,7 +204,7 @@ describe("/courses", () => {
       await request(app)
         .post("/courses/1/users")
         .set("Accept", "application/json")
-        .send({ text: 'Test rating', stars: 4 })
+        .send({})
         .expect(201);
     });
   });
@@ -238,10 +216,16 @@ describe("/courses", () => {
           expect.objectContaining({
             error: expect.arrayContaining([
               expect.objectContaining({
+                location: "body",
                 type: "field",
-                msg: "Invalid date.",
-                path: "enrollmentDate",
-                location: "body"
+                msg: "Song ID should be int.",
+                path: "songId",
+              }),
+              expect.objectContaining({
+                location: "body",
+                msg: "Order should be int.",
+                path: "order",
+                type: "field",
               }),
             ])
           })
@@ -262,11 +246,11 @@ describe("/courses", () => {
         .expect(404);
     });
 
-    it("respond with 201 when a user is added to the course", async () => {
+    it("respond with 201 when a song is added to the course", async () => {
       await request(app)
         .post("/courses/1/songs")
         .set("Accept", "application/json")
-        .send({ songId: 1, order: 2 })
+        .send({ songId: 5, order: 2 })
         .expect(201);
     });
   });

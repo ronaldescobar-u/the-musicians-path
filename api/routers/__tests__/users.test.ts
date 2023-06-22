@@ -10,9 +10,27 @@ describe("/users", () => {
             error: expect.arrayContaining([
               expect.objectContaining({
                 type: "field",
-                msg: "Name is required.",
-                path: "name",
+                msg: "First name is required.",
+                path: "firstName",
                 location: "body"
+              }),
+              expect.objectContaining({
+                type: "field",
+                msg: "Last name is required.",
+                path: "lastName",
+                location: "body"
+              }),
+              expect.objectContaining({
+                location: "body",
+                msg: "Email is invalid.",
+                path: "email",
+                type: "field",
+              }),
+              expect.objectContaining({
+                location: "body",
+                msg: "Password should have at least 8 characters and at least one: uppercase, lowercase, number and symbol.",
+                path: "password",
+                type: "field",
               }),
             ])
           })
@@ -20,20 +38,20 @@ describe("/users", () => {
       };
       await request(app)
         .post("/users")
-        .send({ description: 'test' })
+        .send({ email: 'test', password: 'test' })
         .expect(400)
         .expect(verifyUsersValidation);
     });
 
     it("respond with 201 when a user is created", async () => {
       await request(app)
-        .post("/courses")
+        .post("/users")
         .set("Accept", "application/json")
         .send({
           firstName: "John",
           lastName: "Doe",
-          email: 'johndoe@email.com',
-          password: 'password'
+          email: 'test@email.com',
+          password: 'Password123!'
         })
         .expect(201);
     });

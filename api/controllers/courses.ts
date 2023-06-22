@@ -118,7 +118,6 @@ async function submitRatingToCourse(req: Request<{ id: string }, {}, Rating>, re
 
 async function enrollUserToCourse(req: Request<{ id: string }, {}, CourseUser>, res: Response) {
   const { id } = req.params;
-  const { enrollmentDate } = req.body;
   try {
     await prismaClient.course_user.create({
       data: { course_id: parseInt(id), user_id: res.locals.userId, enrollment_date: new Date() }
@@ -157,14 +156,17 @@ async function addSongToCourse(req: Request<{ id: string }, {}, CourseSong>, res
 async function completeSongOfCourse(req: Request<{ id: string }, {}, { songId: number }>, res: Response) {
   const { id } = req.params;
   const { songId } = req.body;
-  const {id: courseSongId } = await prismaClient.course_song.findFirst({
+  const courseSong = await prismaClient.course_song.findFirst({
     where: { course_id: parseInt(id), song_id: songId }
   });
+  if (!courseSong) {
+    return res.sendStatus(404);
+  }
   await prismaClient.user_course_song.create({
     data: {
       datetime_completed: new Date(),
       user_id: res.locals.userId,
-      course_song_id: courseSongId
+      course_song_id: courseSong.id
     }
   });
   res.sendStatus(201);

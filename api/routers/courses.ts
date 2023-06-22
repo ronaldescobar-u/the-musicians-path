@@ -306,11 +306,6 @@ coursesRouter.route('/:id(\\d+)/ratings').post(
 *         application/json:
 *           schema:
 *             type: object
-*             required:
-*               - enrollmentDate
-*             properties:
-*               enrollmentDate:
-*                 type: string
 *     responses:
 *       201:
 *         description: Created
@@ -324,8 +319,6 @@ coursesRouter.route('/:id(\\d+)/ratings').post(
 *                 value: '{ "message": "Unauthorized" }'
 */
 coursesRouter.route('/:id(\\d+)/users').post(
-  body('enrollmentDate').isDate().withMessage('Invalid date'),
-  validate,
   coursesController.enrollUserToCourse
 );
 

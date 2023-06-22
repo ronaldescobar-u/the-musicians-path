@@ -4,11 +4,11 @@ import app from '../../app';
 describe("/songs", () => {
   describe("GET /songs", () => {
     const songs = [
+      { id: 1, name: "I Want To Hold Your Hand", artist: "The Beatles", genre: "Rock", difficulty: 3 },
       { id: 2, name: "Penny Lane", artist: "The Beatles", genre: "Rock", difficulty: 5 },
       { id: 3, name: "Strawberry Fields Forever", artist: "The Beatles", genre: "Rock", difficulty: 7 },
       { id: 4, name: "I Knew You Were Trouble", artist: "Taylor Swift", genre: "Pop", difficulty: 4 },
-      { id: 5, name: "Pink + White", artist: "Frank Ocean", genre: "R&B", "difficulty": 5 },
-      { id: 1, name: "When I'm Sixty Four", artist: "The Beatles", genre: "Rock", difficulty: 3 }
+      { id: 5, name: "Pink + White", artist: "Frank Ocean", genre: "R&B", difficulty: 5 }
     ];
     it("should respond with json containing a list of songs without filters", async () => {
       await request(app)
@@ -25,7 +25,7 @@ describe("/songs", () => {
         .set("Accept", "application/json")
         .expect("Content-type", /json/)
         .expect(200)
-        .expect(JSON.stringify([songs[0]]));
+        .expect(JSON.stringify([songs[1]]));
     });
   });
 
@@ -165,7 +165,7 @@ describe("/songs", () => {
 
     it("respond with 204 when a song is deleted", async () => {
       await request(app)
-        .delete("/songs/2")
+        .delete("/songs/4")
         .expect(204);
     });
   });
@@ -187,7 +187,7 @@ describe("/songs", () => {
     // });
   });
 
-  describe("POST /song/{id}/comments", () => {
+  describe("POST /songs/{id}/comments", () => {
     it("respond with 400 response when missing data", async () => {
       const verifyCommentValidation = (res) => {
         expect(res.body).toEqual(
@@ -204,7 +204,7 @@ describe("/songs", () => {
         );
       };
       await request(app)
-        .post("/song/1/comments")
+        .post("/songs/1/comments")
         .send({})
         .expect(400)
         .expect(verifyCommentValidation);
@@ -212,7 +212,7 @@ describe("/songs", () => {
 
     it("respond with 404 for non existant course", async () => {
       await request(app)
-        .post("/song/100/comments")
+        .post("/songs/100/comments")
         .set("Accept", "application/json")
         .send({ text: 'Test comment' })
         .expect(404);
@@ -220,7 +220,7 @@ describe("/songs", () => {
 
     it("respond with 201 when a comment is created", async () => {
       await request(app)
-        .post("/song/1/comments")
+        .post("/songs/1/comments")
         .set("Accept", "application/json")
         .send({ text: 'Test comment' })
         .expect(201);

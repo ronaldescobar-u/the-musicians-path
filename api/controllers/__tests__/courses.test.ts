@@ -172,8 +172,8 @@ describe('courses controller', () => {
 
   describe('enrollUserToCourse', () => {
     it('should return 201 and call create', async () => {
-      const req = { params: { id: '1' }, body: { userId: 1, enrollmentDate: '2023-06-19' } };
-      const { userId, enrollmentDate } = req.body;
+      const req = { params: { id: '1' }, body: { userId: 1 } };
+      const { userId } = req.body;
       const res = {
         sendStatus: jest.fn()
       };
@@ -183,7 +183,7 @@ describe('courses controller', () => {
       await coursesController.enrollUserToCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.course_user.create).toHaveBeenCalledWith({ data: { course_id: 1, user_id: userId, enrollment_date: new Date(enrollmentDate) } });
+      expect(prismaClientAsAny.course_user.create).toHaveBeenCalledWith({ data: { course_id: 1, user_id: userId, enrollment_date: new Date() } });
     });
   });
 

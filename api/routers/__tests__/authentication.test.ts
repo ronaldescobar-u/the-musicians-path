@@ -61,15 +61,6 @@ describe("/authentication", () => {
         .set("Accept", "application/json")
         .expect("Content-type", /json/)
         .expect(200)
-        
-    });
-
-    it("should respond with json containing a list of courses with searchQuery", async () => {
-      await request(app)
-        .get("/authentication")
-        .set("Accept", "application/json")
-        .expect("Content-type", /json/)
-        .expect(200)
         .expect(res => {
           expect(res.body).toEqual(
             expect.objectContaining({ accessToken: expect.any(String), refreshToken: expect.any(String) })
