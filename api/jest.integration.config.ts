@@ -1,8 +1,6 @@
 const config = {
-  // globalSetup: "./test/global-setup.ts",
-  globalSetup: "./test/global-setup.js",
-  // globalTeardown: "./test/global-teardown.ts",
-  globalTeardown: "./test/global-teardown.js",
+  globalSetup: "./test/global-setup.ts",
+  globalTeardown: "./test/global-teardown.ts",
   clearMocks: true,
   testTimeout: 1500,
   testEnvironment: 'node',

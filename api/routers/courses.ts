@@ -372,4 +372,43 @@ coursesRouter.route('/:id(\\d+)/songs').post(
   coursesController.addSongToCourse
 );
 
+/**
+* @openapi
+* /courses/{id}/songs:
+*   put:
+*     tags: [
+*       courses
+*     ]
+*     parameters:
+*       - name: id
+*         in: path
+*         type: integer
+*     requestBody:
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             required:
+*               - songId
+*             properties:
+*               songId:
+*                 type: number
+*     responses:
+*       201:
+*         description: Created
+*       401:
+*         description: Unauthorized
+*         content:
+*           application/json:
+*             examples:
+*               jsonObject:
+*                 summary: An example JSON response
+*                 value: '{ "message": "Unauthorized" }'
+*/
+coursesRouter.route('/:id(\\d+)/songs').put(
+  body('songId').isInt().withMessage('Song ID should be int.'),
+  validate,
+  coursesController.completeSongOfCourse
+);
+
 export default coursesRouter;

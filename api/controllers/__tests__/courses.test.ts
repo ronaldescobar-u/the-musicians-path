@@ -203,4 +203,24 @@ describe('courses controller', () => {
       expect(prismaClientAsAny.course_song.create).toHaveBeenCalledWith({ data: { course_id: 1, song_id: songId, order, added_by: addedBy, is_approved: true } });
     });
   });
+
+  describe('completeSongOfCourse', () => {
+    it('should return 201 and call create', async () => {
+      const req = { params: { id: '1' }, body: { songId: 1 } };
+      const { songId } = req.body;
+      const res = {
+        sendStatus: jest.fn(),
+        locals: { userId: 1 }
+      };
+      const prismaClientAsAny = prismaClient as any;
+      prismaClientAsAny.course_song = { findFirst: jest.fn().mockReturnValueOnce({ id: 1 }) };
+      prismaClientAsAny.user_course_song = { create: jest.fn() };
+
+      await coursesController.completeSongOfCourse(req as any, res as any);
+
+      expect(res.sendStatus).toHaveBeenCalledWith(201);
+      expect(prismaClientAsAny.course_song.findFirst).toHaveBeenCalledWith({ where: { course_id: 1, songId: songId } });
+      expect(prismaClientAsAny.user_course_song.create).toHaveBeenCalledWith({ data: { datetime_completed: new Date(), user_id: 1, course_song_id: 1 } });
+    });
+  });
 });

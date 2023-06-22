@@ -270,5 +270,44 @@ describe("/courses", () => {
         .expect(201);
     });
   });
+
+  describe("PUT /courses/{id}/songs", () => {
+    it("respond with 400 response when missing data", async () => {
+      const verifyValidation = (res) => {
+        expect(res.body).toEqual(
+          expect.objectContaining({
+            error: expect.arrayContaining([
+              expect.objectContaining({
+                type: "field",
+                msg: "Song ID should be int.",
+                path: "songId",
+                location: "body"
+              }),
+            ])
+          })
+        );
+      };
+      await request(app)
+        .put("/courses/1/songs")
+        .send({})
+        .expect(400)
+        .expect(verifyValidation);
+    });
+
+    it("respond with 404 for non existant course", async () => {
+      await request(app)
+        .put("/courses/100/songs")
+        .set("Accept", "application/json")
+        .send({ songId: 1 })
+        .expect(404);
+    });
+
+    it("respond with 201 when a song is completed in the course", async () => {
+      await request(app)
+        .put("/courses/1/songs")
+        .set("Accept", "application/json")
+        .send({ songId: 1 })
+        .expect(201);
+    });
+  });
 });
-// todo vue app, terminar lo otro del ws pa decirle a diego
