@@ -83,21 +83,22 @@ describe('courses controller', () => {
   });
 
   describe('createCourse', () => {
-    const course = { name: 'test', description: 'test', addedBy: 1 }
+    const course = { name: 'test', description: 'test' };
 
     it('should return 201 and call create course', async () => {
       const req = { body: course };
       const res = {
-        sendStatus: jest.fn()
+        sendStatus: jest.fn(),
+        locals: { userId: 1 }
       };
       const prismaClientAsAny = prismaClient as any;
       prismaClientAsAny.course = { create: jest.fn() };
-      const { name, description, addedBy } = req.body;
+      const { name, description } = req.body;
 
       await coursesController.createCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.course.create).toHaveBeenCalledWith({ data: { name, description, added_by: addedBy } });
+      expect(prismaClientAsAny.course.create).toHaveBeenCalledWith({ data: { name, description, added_by: 1 } });
     });
   });
 
@@ -155,10 +156,11 @@ describe('courses controller', () => {
 
   describe('submitRatingToCourse', () => {
     it('should return 201 and call create', async () => {
-      const req = { params: { id: '1' }, body: { stars: 5, text: 'test', addedBy: 1 } };
-      const { stars, text, addedBy } = req.body;
+      const req = { params: { id: '1' }, body: { stars: 5, text: 'test' } };
+      const { stars, text } = req.body;
       const res = {
-        sendStatus: jest.fn()
+        sendStatus: jest.fn(),
+        locals: { userId: 1 }
       };
       const prismaClientAsAny = prismaClient as any;
       prismaClientAsAny.rating = { create: jest.fn() };
@@ -166,16 +168,16 @@ describe('courses controller', () => {
       await coursesController.submitRatingToCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.rating.create).toHaveBeenCalledWith({ data: { course_id: 1, stars, text, added_by: addedBy } });
+      expect(prismaClientAsAny.rating.create).toHaveBeenCalledWith({ data: { course_id: 1, stars, text, added_by: 1 } });
     });
   });
 
   describe('enrollUserToCourse', () => {
     it('should return 201 and call create', async () => {
-      const req = { params: { id: '1' }, body: { userId: 1 } };
-      const { userId } = req.body;
+      const req = { params: { id: '1' }, body: {} };
       const res = {
-        sendStatus: jest.fn()
+        sendStatus: jest.fn(),
+        locals: { userId: 1 }
       };
       const prismaClientAsAny = prismaClient as any;
       prismaClientAsAny.course_user = { create: jest.fn() };
@@ -183,16 +185,18 @@ describe('courses controller', () => {
       await coursesController.enrollUserToCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.course_user.create).toHaveBeenCalledWith({ data: { course_id: 1, user_id: userId, enrollment_date: new Date() } });
+      expect(prismaClientAsAny.course_user.create).toHaveBeenCalledWith({ data: { course_id: 1, user_id: 1, enrollment_date: new Date() } });
+      expect(prismaClientAsAny.course_user.create).toHaveBeenCalledWith({ data: expect.objectContaining({ course_id: 1, user_id: 1, enrollment_date: expect.any(Date) }) })
     });
   });
 
   describe('addSongToCourse', () => {
     it('should return 201 and call create', async () => {
-      const req = { params: { id: '1' }, body: { songId: 1, order: 1, addedBy: 1 } };
-      const { songId, order, addedBy } = req.body;
+      const req = { params: { id: '1' }, body: { songId: 1, order: 1 } };
+      const { songId, order } = req.body;
       const res = {
-        sendStatus: jest.fn()
+        sendStatus: jest.fn(),
+        locals: { userId: 1 }
       };
       const prismaClientAsAny = prismaClient as any;
       prismaClientAsAny.course_song = { create: jest.fn() };
@@ -200,7 +204,7 @@ describe('courses controller', () => {
       await coursesController.addSongToCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.course_song.create).toHaveBeenCalledWith({ data: { course_id: 1, song_id: songId, order, added_by: addedBy, is_approved: true } });
+      expect(prismaClientAsAny.course_song.create).toHaveBeenCalledWith({ data: { course_id: 1, song_id: songId, order, added_by: 1, is_approved: true } });
     });
   });
 
@@ -219,8 +223,9 @@ describe('courses controller', () => {
       await coursesController.completeSongOfCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.course_song.findFirst).toHaveBeenCalledWith({ where: { course_id: 1, songId: songId } });
-      expect(prismaClientAsAny.user_course_song.create).toHaveBeenCalledWith({ data: { datetime_completed: new Date(), user_id: 1, course_song_id: 1 } });
+      expect(prismaClientAsAny.course_song.findFirst).toHaveBeenCalledWith({ where: { course_id: 1, song_id: songId } });
+      // expect(prismaClientAsAny.user_course_song.create).toHaveBeenCalledWith({ data: { datetime_completed: new Date(), user_id: 1, course_song_id: 1 } });
+      expect(prismaClientAsAny.user_course_song.create).toHaveBeenCalledWith({ data: expect.objectContaining({ datetime_completed: expect.any(Date), user_id: 1, course_song_id: 1 }) })
     });
   });
 });

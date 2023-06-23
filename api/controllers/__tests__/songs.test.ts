@@ -6,14 +6,25 @@ jest.mock('@prisma/client');
 jest.mock('../../prisma/client');
 
 describe('songs controller', () => {
+  const songs = [{
+    id: 1,
+    name: 'test',
+    artist: { name: 'test' },
+    genre: { name: 'test' },
+    difficulty: 5,
+    user: { first_name: 'test', last_name: 'test' },
+    song_file: [{ id: 1, file_type: { id: 1, type: 'test' }, content: 'test' }]
+  }];
+
   describe('getSongs', () => {
     const select = {
       id: true,
       artist: true,
       genre: true,
-      difficulty: true
+      difficulty: true,
+      name: true
     };
-    const songs = [{ name: 'test ' }];
+    const mappedSongs = songs.map(song => ({ ...song, artist: song.artist.name, genre: song.genre.name }));
 
     it('should have empty object as where clause if no query params provided and return songs', async () => {
       const req = { query: {} };
@@ -26,7 +37,7 @@ describe('songs controller', () => {
       await songsController.getSongs(req as any, res as any);
 
       expect(prismaClientAsAny.song.findMany).toHaveBeenCalledWith({ where: {}, select });
-      expect(res.json).toHaveBeenCalledWith(songs);
+      expect(res.json).toHaveBeenCalledWith(mappedSongs);
     });
 
     it('should have artist_id, genre_id and name in where clause and return songs', async () => {
@@ -39,8 +50,10 @@ describe('songs controller', () => {
 
       await songsController.getSongs(req as any, res as any);
 
-      expect(prismaClientAsAny.song.findMany).toHaveBeenCalledWith({ where: { artist_id: 1, genre_id: 1, name: { contains: 'test', mode: 'insensitive' } }, select });
-      expect(res.json).toHaveBeenCalledWith(songs);
+      expect(prismaClientAsAny.song.findMany).toHaveBeenCalledWith({
+        where: { artist_id: 1, genre_id: 1, name: { contains: 'test', mode: 'insensitive' } }, select
+      });
+      expect(res.json).toHaveBeenCalledWith(mappedSongs);
     });
   });
 
@@ -59,7 +72,7 @@ describe('songs controller', () => {
     });
 
     it('should return song data', async () => {
-      const song = { name: 'Strawberry fields forever' };
+      const [song] = songs;
       const req = { params: { id: '1' } };
       const res = {
         json: jest.fn()
@@ -69,41 +82,62 @@ describe('songs controller', () => {
 
       await songsController.getSong(req as any, res as any);
 
-      expect(res.json).toHaveBeenCalledWith(song);
+      expect(res.json).toHaveBeenCalledWith({
+        id: 1,
+        name: 'test',
+        artist: 'test',
+        genre: 'test',
+        difficulty: 5,
+        addedBy: 'test test',
+        files: [{ id: 1, fileTypeId: 1, fileType: 'test', content: 'test' }]
+      });
     });
   });
 
   describe('createSong', () => {
-    const song = { name: 'a', artistId: 1, genreId: 1, difficulty: 1, addedBy: 1 }
+    const song = { name: 'a', artistId: 1, genreId: 1, difficulty: 1 }
 
     it('should return 201 and call create song with no files', async () => {
       const req = { body: song };
       const res = {
-        sendStatus: jest.fn()
+        sendStatus: jest.fn(),
+        locals: { userId: 1 }
       };
       const prismaClientAsAny = prismaClient as any;
       prismaClientAsAny.song = { create: jest.fn() };
-      const { name, artistId, genreId, difficulty, addedBy } = req.body;
+      const { name, artistId, genreId, difficulty } = req.body;
 
       await songsController.createSong(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.song.create).toHaveBeenCalledWith({ data: { name, artist_id: artistId, genre_id: genreId, difficulty, added_by: addedBy } });
+      expect(prismaClientAsAny.song.create).toHaveBeenCalledWith({
+        data: { name, artist_id: artistId, genre_id: genreId, difficulty, added_by: 1 }
+      });
     });
 
     it('should return 201 and call create song with files', async () => {
       const req = { body: { ...song, files: [{ content: 'C G B A', fileTypeId: 1 }] } };
       const res = {
-        sendStatus: jest.fn()
+        sendStatus: jest.fn(),
+        locals: { userId: 1 }
       };
       const prismaClientAsAny = prismaClient as any;
       prismaClientAsAny.song = { create: jest.fn() };
-      const { name, artistId, genreId, difficulty, addedBy, files } = req.body;
+      const { name, artistId, genreId, difficulty, files } = req.body;
 
       await songsController.createSong(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.song.create).toHaveBeenCalledWith({ data: { name, artist_id: artistId, genre_id: genreId, difficulty, added_by: addedBy, song_file: { create: [{ content: 'C G B A', file_type_id: 1 }] } } });
+      expect(prismaClientAsAny.song.create).toHaveBeenCalledWith({
+        data: {
+          name,
+          artist_id: artistId,
+          genre_id: genreId,
+          difficulty,
+          added_by: 1,
+          song_file: { create: [{ content: 'C G B A', file_type_id: 1 }] }
+        }
+      });
     });
   });
 
@@ -119,7 +153,10 @@ describe('songs controller', () => {
       await songsController.updateSong(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(204);
-      expect(prismaClientAsAny.song.update).toHaveBeenCalledWith({ where: { id: 1 }, data: { name: 'strawberry', genre_id: 1 } });
+      expect(prismaClientAsAny.song.update).toHaveBeenCalledWith({
+        where: { id: 1 },
+        data: { name: 'strawberry', genre_id: 1 }
+      });
     });
   });
 
@@ -130,6 +167,7 @@ describe('songs controller', () => {
         sendStatus: jest.fn()
       };
       const prismaClientAsAny = prismaClient as any;
+      prismaClientAsAny.song_file = { deleteMany: jest.fn() };
       prismaClientAsAny.song = { delete: jest.fn() };
 
       await songsController.deleteSong(req as any, res as any);
@@ -161,16 +199,19 @@ describe('songs controller', () => {
       await songsController.getCommentsOfSong(req as any, res as any);
 
       expect(res.json).toHaveBeenCalledWith(comments);
-      expect(prismaClientAsAny.comment.findMany).toHaveBeenCalledWith({ where: { song_id: 1 }, select: selectObject });
+      expect(prismaClientAsAny.comment.findMany).toHaveBeenCalledWith({
+        where: { song_id: 1 }, select: selectObject
+      });
     });
   });
 
   describe('postCommentToSong', () => {
     it('should return 201 and call create', async () => {
-      const req = { params: { id: '1' }, body: { text: 'test', addedBy: 1 } };
-      const { text, addedBy } = req.body;
+      const req = { params: { id: '1' }, body: { text: 'test' } };
+      const { text } = req.body;
       const res = {
-        sendStatus: jest.fn()
+        sendStatus: jest.fn(),
+        locals: { userId: 1 }
       };
       const prismaClientAsAny = prismaClient as any;
       prismaClientAsAny.comment = { create: jest.fn() };
@@ -178,7 +219,9 @@ describe('songs controller', () => {
       await songsController.postCommentToSong(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.comment.create).toHaveBeenCalledWith({ data: { song_id: 1, text, added_by: addedBy } });
+      expect(prismaClientAsAny.comment.create).toHaveBeenCalledWith({
+        data: { song_id: 1, text, added_by: 1 }
+      });
     });
   });
 });
