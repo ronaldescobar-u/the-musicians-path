@@ -98,7 +98,9 @@ describe('courses controller', () => {
       await coursesController.createCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.course.create).toHaveBeenCalledWith({ data: { name, description, added_by: 1 } });
+      expect(prismaClientAsAny.course.create).toHaveBeenCalledWith({
+        data: { name, description, added_by: 1 }
+      });
     });
   });
 
@@ -114,7 +116,9 @@ describe('courses controller', () => {
       await coursesController.updateCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(204);
-      expect(prismaClientAsAny.course.update).toHaveBeenCalledWith({ where: { id: 1 }, data: { name: 'course' } });
+      expect(prismaClientAsAny.course.update).toHaveBeenCalledWith({
+        where: { id: 1 }, data: { name: 'course' }
+      });
     });
   });
 
@@ -150,7 +154,9 @@ describe('courses controller', () => {
       await coursesController.getRatingsOfCourse(req as any, res as any);
 
       expect(res.json).toHaveBeenCalledWith(comments);
-      expect(prismaClientAsAny.rating.findMany).toHaveBeenCalledWith({ where: { course_id: 1 }, select: selectObject });
+      expect(prismaClientAsAny.rating.findMany).toHaveBeenCalledWith({
+        where: { course_id: 1 }, select: selectObject
+      });
     });
   });
 
@@ -168,7 +174,9 @@ describe('courses controller', () => {
       await coursesController.submitRatingToCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.rating.create).toHaveBeenCalledWith({ data: { course_id: 1, stars, text, added_by: 1 } });
+      expect(prismaClientAsAny.rating.create).toHaveBeenCalledWith({
+        data: { course_id: 1, stars, text, added_by: 1 }
+      });
     });
   });
 
@@ -185,8 +193,9 @@ describe('courses controller', () => {
       await coursesController.enrollUserToCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.course_user.create).toHaveBeenCalledWith({ data: { course_id: 1, user_id: 1, enrollment_date: new Date() } });
-      expect(prismaClientAsAny.course_user.create).toHaveBeenCalledWith({ data: expect.objectContaining({ course_id: 1, user_id: 1, enrollment_date: expect.any(Date) }) })
+      expect(prismaClientAsAny.course_user.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({ course_id: 1, user_id: 1, enrollment_date: expect.any(Date) })
+      });
     });
   });
 
@@ -204,7 +213,9 @@ describe('courses controller', () => {
       await coursesController.addSongToCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.course_song.create).toHaveBeenCalledWith({ data: { course_id: 1, song_id: songId, order, added_by: 1, is_approved: true } });
+      expect(prismaClientAsAny.course_song.create).toHaveBeenCalledWith({
+        data: { course_id: 1, song_id: songId, order, added_by: 1, is_approved: true }
+      });
     });
   });
 
@@ -223,9 +234,16 @@ describe('courses controller', () => {
       await coursesController.completeSongOfCourse(req as any, res as any);
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
-      expect(prismaClientAsAny.course_song.findFirst).toHaveBeenCalledWith({ where: { course_id: 1, song_id: songId } });
-      // expect(prismaClientAsAny.user_course_song.create).toHaveBeenCalledWith({ data: { datetime_completed: new Date(), user_id: 1, course_song_id: 1 } });
-      expect(prismaClientAsAny.user_course_song.create).toHaveBeenCalledWith({ data: expect.objectContaining({ datetime_completed: expect.any(Date), user_id: 1, course_song_id: 1 }) })
+      expect(prismaClientAsAny.course_song.findFirst).toHaveBeenCalledWith({
+        where: { course_id: 1, song_id: songId }
+      });
+      expect(prismaClientAsAny.user_course_song.create).toHaveBeenCalledWith({
+        data: expect.objectContaining({
+          datetime_completed: expect.any(Date),
+          user_id: 1,
+          course_song_id: 1
+        })
+      });
     });
   });
 });
