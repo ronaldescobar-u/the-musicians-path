@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 async function verifyToken(req: Request, res: Response, next: NextFunction) {
-  if (process.env.NODE_ENV === "test") {
+  if (process.env.NODE_ENV === "test" || req.path === '/authentication') {
     return handleTest(res, next);
   }
   const { authorization } = req.headers;

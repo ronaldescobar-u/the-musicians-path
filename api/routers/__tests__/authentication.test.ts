@@ -32,7 +32,17 @@ describe("/authentication", () => {
         .expect(verifyUsersValidation);
     });
 
-    it("respond with 401 when credentials are incorrect", async () => {
+    it("respond with 401 when email is incorrect", async () => {
+      await request(app)
+        .post("/authentication")
+        .send({
+          email: "test@email.com",
+          password: "passsword",
+        })
+        .expect(401);
+    });
+
+    it("respond with 401 when password is incorrect", async () => {
       await request(app)
         .post("/authentication")
         .send({
@@ -55,9 +65,9 @@ describe("/authentication", () => {
   });
 
   describe("GET /authentication/refresh", () => {
-    it("should respond with 401", async () => {
+    it("should respond with 200 and tokens", async () => {
       await request(app)
-        .get("/authentication")
+        .get("/authentication/refresh")
         .set("Accept", "application/json")
         .expect("Content-type", /json/)
         .expect(200)

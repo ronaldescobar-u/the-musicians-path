@@ -46,10 +46,9 @@ app.use(urlencoded({ extended: true }));
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(openapiSpecification));
 app.use("/swagger.json", (req, res) => res.json(openapiSpecification).status(200));
 
-app.use('/authentication', authenticationRouter);
-
 app.all("*", verifyToken);
 
+app.use('/authentication', authenticationRouter);
 app.use('/courses', coursesRouter);
 app.use('/songs', songsRouter);
 app.use('/users', usersRouter);

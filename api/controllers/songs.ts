@@ -109,6 +109,9 @@ async function updateSong(req: Request<{ id: string }, {}, Song>, res: Response)
 async function deleteSong(req: Request, res: Response) {
   const { id } = req.params;
   try {
+    await prismaClient.song_file.deleteMany({
+      where: { song_id: parseInt(id) }
+    });
     await prismaClient.song.delete({
       where: { id: parseInt(id) }
     });
