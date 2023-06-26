@@ -6,7 +6,7 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
-import VueRouter from 'vue-router'
+import * as VueRouter from 'vue-router'
 
 const routes = [
   { path: '/login', component: Login },
