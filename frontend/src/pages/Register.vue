@@ -8,5 +8,5 @@
   <v-btn>
     Sign up
   </v-btn>
-  <p>Already have an account? <router-link to='/register'>Login</router-link></p>
+  <p>Already have an account? <router-link to='/login'>Login</router-link></p>
 </template>
