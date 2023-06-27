@@ -1,13 +1,9 @@
 <script setup lang="ts">
+import Header from './components/Header.vue';
 </script>
 <template>
+  <Header />
   <div>
-    <div>
-      <router-link to="/explore/courses"></router-link>
-      <router-link to="/explore/songs"></router-link>
-      <router-link to="/created-by-me/courses"></router-link>
-      <router-link to="/created-by-me/songs"></router-link>
-    </div>
     <router-view></router-view>
   </div>
 </template>
