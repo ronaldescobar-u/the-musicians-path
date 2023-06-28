@@ -8,7 +8,7 @@ const email = ref('');
 const password = ref('');
 
 function login() {
-axios.post('', {})
+  axios.post('http://localhost:3001/authentication', { email: email.value, password: password.value });
 }
 </script>
 <template>
