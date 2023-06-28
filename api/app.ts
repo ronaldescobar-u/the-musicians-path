@@ -3,8 +3,11 @@ import { coursesRouter, songsRouter, usersRouter, artistsRouter, genresRouter, a
 import swaggerUI from "swagger-ui-express";
 import swaggerJSDoc from "swagger-jsdoc";
 import verifyToken from './middlewares/authentication';
+import cors from 'cors';
 
 const app = express();
+
+app.use(cors());
 
 const swaggerDefinition = {
   openapi: "3.0.0",
