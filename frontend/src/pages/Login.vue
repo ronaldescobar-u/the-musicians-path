@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import axios from 'axios';
+import { login } from '../services/user.service';
 
 const email = ref('');
 const password = ref('');
 const passwordVisible = ref(false);
 
-function login() {
-  axios.post('http://localhost:3001/authentication', { email: email.value, password: password.value });
+function submit() {
+  login(email.value, password.value);
 }
 </script>
 <template>
@@ -21,7 +21,7 @@ function login() {
         :type="passwordVisible ? 'text' : 'password'" @click:append-inner="passwordVisible = !passwordVisible"
         label="Password">
       </v-text-field>
-      <v-btn block @click="login" variant="elevated" color="indigo-accent-2">
+      <v-btn block @click="submit" variant="elevated" color="indigo-accent-2">
         Login
       </v-btn>
       <p class="text-center mt-4 mb-2">Dont have an account yet? <router-link to='/register'>Sign up</router-link></p>
