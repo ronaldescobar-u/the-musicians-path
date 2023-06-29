@@ -38,4 +38,22 @@ async function getRatingsOfCourse(id: number) {
     .then(({ data }) => data);
 }
 
+async function submitRatingToCourse(id: number, rating: any) {
+  return axios
+    .post(`${apiUrl}/courses${id}/ratings`, { name, description })
+    .then(({ data }) => data);
+}
+
+async function enrollUserToCourse(id: number, rating: any) {
+  return axios
+    .post(`${apiUrl}/courses${id}/users`, { name, description })
+    .then(({ data }) => data);
+}
+
+async function addSongToCourse(id: number, rating: any) {
+  return axios
+    .post(`${apiUrl}/courses${id}/songs`, { name, description })
+    .then(({ data }) => data);
+}
+
 export { getCourses, getCourse, createCourse, updateCourse, deleteCourse };
