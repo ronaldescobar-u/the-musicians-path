@@ -8,4 +8,10 @@ async function login(email: string, password: string) {
     .then(({ data }) => data);
 }
 
-export { login };
+async function createUser(firstName: string, lastName: string, email: string, password: string) {
+  return axios
+    .post(`${apiUrl}/user`, { firstName, lastName, email, password })
+    .then(({ data }) => data);
+}
+
+export { login, createUser };

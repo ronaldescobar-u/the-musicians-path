@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { createUser } from '../services/user.service';
 
 const firstName = ref('');
 const lastName = ref('');
@@ -10,7 +11,7 @@ const confirmPassword = ref('');
 const confirmPasswordVisible = ref(false);
 
 function signUp() {
-
+  createUser(firstName.value, lastName.value, email.value, password.value)
 }
 </script>
 <template>
