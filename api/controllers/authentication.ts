@@ -7,14 +7,15 @@ import prismaClient from '../prisma/client';
 async function authenticate(req: Request<{}, {}, AuthenticateDto>, res: Response) {
   const { email, password } = req.body;
   const user = await prismaClient.user.findUnique({ where: { email } });
-  if (user) {
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if (isPasswordCorrect) {
-      const tokens = generateTokens(user.id);
-      return res.json(tokens);
-    }
+  if (!user) {
+    return res.status(401).send({ message: 'Email does not exist in our records.' });
   }
-  return res.sendStatus(401);
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  if (!isPasswordCorrect) {
+    return res.status(401).send({ message: 'Incorrect password.' });
+  }
+  const tokens = generateTokens(user.id);
+  return res.json(tokens);
 }
 
 async function refresh(req: Request, res: Response) {

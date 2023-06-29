@@ -4,7 +4,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 async function getGenres() {
   return axios
-    .get(`${apiUrl}/genre`)
+    .get(`${apiUrl}/genres`)
     .then(({ data }) => data);
 }
 

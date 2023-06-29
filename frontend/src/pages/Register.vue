@@ -9,8 +9,12 @@ const password = ref('');
 const passwordVisible = ref(false);
 const confirmPassword = ref('');
 const confirmPasswordVisible = ref(false);
+const errorMessage = ref('');
 
 function signUp() {
+  if (password.value !== confirmPassword.value) {
+    errorMessage.value = 'Passwords do not match';
+  }
   createUser(firstName.value, lastName.value, email.value, password.value)
 }
 </script>
@@ -39,6 +43,7 @@ function signUp() {
         label="Confirm password"
       >
       </v-text-field>
+      <p>{{ errorMessage }}</p>
       <v-btn block @click="signUp" variant="elevated" color="indigo-accent-2">
         Sign up
       </v-btn>

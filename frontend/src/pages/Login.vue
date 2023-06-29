@@ -5,6 +5,7 @@ import { login } from '../services/user.service';
 const email = ref('');
 const password = ref('');
 const passwordVisible = ref(false);
+const errorMessage = ref('');
 
 function submit() {
   login(email.value, password.value);
@@ -21,6 +22,7 @@ function submit() {
         :type="passwordVisible ? 'text' : 'password'" @click:append-inner="passwordVisible = !passwordVisible"
         label="Password">
       </v-text-field>
+      <p>{{ errorMessage }}</p>
       <v-btn block @click="submit" variant="elevated" color="indigo-accent-2">
         Login
       </v-btn>
