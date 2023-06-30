@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { login } from '../services/user.service';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const email = ref('');
 const password = ref('');
 const passwordVisible = ref(false);
@@ -9,6 +11,7 @@ const errorMessage = ref('');
 
 function submit() {
   login(email.value, password.value);
+  router.push('/')
 }
 </script>
 <template>

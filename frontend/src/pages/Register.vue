@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { createUser } from '../services/user.service';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const firstName = ref('');
 const lastName = ref('');
 const email = ref('');
@@ -16,6 +18,7 @@ function signUp() {
     errorMessage.value = 'Passwords do not match';
   }
   createUser(firstName.value, lastName.value, email.value, password.value)
+  router.push('/');
 }
 </script>
 <template>
