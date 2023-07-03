@@ -3,16 +3,30 @@ import { ref, onMounted } from 'vue';
 import { getSongs } from '../services/song.service';
 import { watch } from 'vue';
 import debounce from 'debounce';
+import { getArtists } from '../services/artist.service';
+import { getGenres } from '../services/genre.service';
 
 const songs = ref([]);
+const artists = ref([]);
+const artistSelected = ref('');
+const genres = ref([]);
+const genreSelected = ref('');
 const searchQuery = ref('');
 
 onMounted(async () => {
-  songs.value = await getSongs(searchQuery.value);
+  Promise.all([getSongs(searchQuery.value), getArtists(), getGenres()]).then(([songsResponse, artistsResponse, genresResponse]) => {
+    songs.value = songsResponse;
+    artists.value = artistsResponse;
+    genres.value = genresResponse;
+  })
 });
 
 watch(searchQuery, () => {
   debouncedSearch(searchQuery)
+});
+
+watch([artistsSelected, genresSelected], async () => {
+  songs.value = await getSongs(searchQuery.value);
 });
 
 const debouncedSearch = debounce(async () => {
@@ -22,7 +36,11 @@ const debouncedSearch = debounce(async () => {
 
 <template>
   <div>
-    <v-text-field class="my-4" v-model="searchQuery" label="Search"></v-text-field>
+    <div>
+      <v-text-field class="my-4" v-model="searchQuery" label="Search"></v-text-field>
+      <v-select label="Artist" :items="artists" item-title="name" item-value="id" v-model="artistSelected"></v-select>
+      <v-select label="Genre" :items="genres" item-title="name" item-value="id" v-model="genreSelected"></v-select>
+    </div>
     <v-table>
       <thead>
         <tr>

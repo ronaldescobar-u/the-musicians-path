@@ -2,9 +2,9 @@ import axios from 'axios';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
-async function getSongs(searchQuery: string) {
+async function getSongs(searchQuery: string, artistId: number, genreId: number) {
   return axios
-    .get(`${apiUrl}/songs`, { params: { searchQuery } })
+    .get(`${apiUrl}/songs`, { params: { searchQuery, artistId, genreId } })
     .then(({ data }) => data);
 }
 
