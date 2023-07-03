@@ -25,8 +25,8 @@ watch(searchQuery, () => {
   debouncedSearch(searchQuery)
 });
 
-watch([artistsSelected, genresSelected], async () => {
-  songs.value = await getSongs(searchQuery.value);
+watch([artistSelected, genreSelected], async () => {
+  songs.value = await getSongs(searchQuery.value, artistSelected.value, genreSelected.value);
 });
 
 const debouncedSearch = debounce(async () => {
