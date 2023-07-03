@@ -20,6 +20,9 @@ function submit() {
       <v-text-field v-model="name" label="Email"></v-text-field>
       <v-textarea v-model="description" label="Password"></v-textarea>
       <v-btn block @click="submit" variant="elevated" color="indigo-accent-2">
+        Close
+      </v-btn>
+      <v-btn block @click="submit" variant="elevated" color="indigo-accent-2">
         {{ isCreate ? 'Create' : 'Update' }}
       </v-btn>
     </v-card>
