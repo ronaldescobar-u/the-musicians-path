@@ -24,6 +24,9 @@ watch(searchQuery, () => {
 <template>
   <div>
     <v-text-field class="my-4" v-model="searchQuery" label="Search"></v-text-field>
+    <v-btn block @click="submit" variant="elevated" color="indigo-accent-2">
+        Create course
+      </v-btn>
     <v-table>
       <thead>
         <tr>

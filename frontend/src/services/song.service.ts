@@ -14,9 +14,9 @@ async function getSong(id: number) {
     .then(({ data }) => data);
 }
 
-async function createSong(name: string, description: string) {
+async function createSong(name: string, artistId: number, genreId: number, difficulty: number) {
   return axios
-    .post(`${apiUrl}/songs`, { name, description })
+    .post(`${apiUrl}/songs`, { name, artistId, genreId, difficulty })
     .then(({ data }) => data);
 }
 
