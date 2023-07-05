@@ -20,9 +20,9 @@ async function createSong(name: string, artistId: number, genreId: number, diffi
     .then(({ data }) => data);
 }
 
-async function updateSong(id: number, name: string, description: string) {
+async function updateSong(id: number, name: string, artistId: number, genreId: number, difficulty: number) {
   return axios
-    .put(`${apiUrl}/songs/${id}`, { name, description })
+    .put(`${apiUrl}/songs/${id}`, { name, artistId, genreId, difficulty })
     .then(({ data }) => data);
 }
 
@@ -44,4 +44,4 @@ async function postCommentToSong(id: number, comment: any) {
     .then(({ data }) => data);
 }
 
-export { getSongs, getSong, createSong, updateSong, deleteSong };
+export { getSongs, getSong, createSong, updateSong, deleteSong, getCommentsOfSong, postCommentToSong };

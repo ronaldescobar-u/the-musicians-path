@@ -56,4 +56,21 @@ async function addSongToCourse(id: number, rating: any) {
     .then(({ data }) => data);
 }
 
-export { getCourses, getCourse, createCourse, updateCourse, deleteCourse };
+async function completeSongOfCourse(id: number, rating: any) {
+  return axios
+    .put(`${apiUrl}/courses${id}/songs`, { name, description })
+    .then(({ data }) => data);
+}
+
+export {
+  getCourses,
+  getCourse,
+  createCourse,
+  updateCourse,
+  deleteCourse,
+  getRatingsOfCourse,
+  submitRatingToCourse,
+  enrollUserToCourse,
+  addSongToCourse,
+  completeSongOfCourse
+};

@@ -21,7 +21,7 @@ onMounted(async () => {
 });
 
 function submit() {
-  createSong(name.value, description.value);
+  createSong(name.value, artistSelected.value, genreSelected.value, difficulty.value);
 }
 </script>
 <template>
@@ -31,6 +31,8 @@ function submit() {
         {{ isCreate ? 'Create' : 'Update' }} course
       </v-card-title>
       <v-text-field v-model="name" label="Name"></v-text-field>
+      <v-select label="Artist" :items="artists" item-title="name" item-value="id" v-model="artistSelected"></v-select>
+      <v-select label="Genre" :items="genres" item-title="name" item-value="id" v-model="genreSelected"></v-select>
       <v-text-field type="number" v-model="difficulty" label="Difficulty"></v-text-field>
       <v-btn block @click="submit" variant="elevated" color="indigo-accent-2">
         Close

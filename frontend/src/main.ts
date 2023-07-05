@@ -7,6 +7,8 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
+import Home from './pages/Home.vue';
+import Song from './pages/Song.vue';
 import ExploreWrapper from './components/ExploreWrapper.vue';
 import ExploreCourses from './pages/ExploreCourses.vue';
 import ExploreSongs from './pages/ExploreSongs.vue';
@@ -19,7 +21,8 @@ import { mdi } from 'vuetify/iconsets/mdi'
 const routes: VueRouter.RouteRecordRaw[] = [
   { path: '/login', component: Login },
   { path: '/register', component: Register },
-  
+  { path: '/', component: Home },
+  { path: '/song/:id', component: Song },
   {
     path: '/explore', component: ExploreWrapper, children: [
       { path: 'courses', name: 'courses', component: ExploreCourses },
