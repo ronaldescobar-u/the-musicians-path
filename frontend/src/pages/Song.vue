@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router'
-import { getCourses } from '../services/course.service';
-import debounce from 'debounce';
 import { getSong } from '../services/song.service';
 import Song from '../types/Song';
 

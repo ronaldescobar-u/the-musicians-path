@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { getCourses } from '../services/course.service';
+import { getCourses, deleteCourse } from '../services/course.service';
 import { watch } from 'vue';
 import debounce from 'debounce';
-import { watchEffect } from 'vue';
 
 const courses = ref([]);
 const searchQuery = ref('');
@@ -19,14 +18,24 @@ const debouncedSearch = debounce(async () => {
 watch(searchQuery, () => {
   debouncedSearch(searchQuery)
 });
+
+function openUpdateCourseModal() {
+
+}
+
+function promptDeleteCourse(id: number) {
+  if (confirm('Are you sure you want to delete the course?')) {
+    deleteCourse(id);
+  }
+}
 </script>
 
 <template>
   <div>
     <v-text-field class="my-4" v-model="searchQuery" label="Search"></v-text-field>
     <v-btn block @click="submit" variant="elevated" color="indigo-accent-2">
-        Create course
-      </v-btn>
+      Create course
+    </v-btn>
     <v-table>
       <thead>
         <tr>
@@ -47,10 +56,10 @@ watch(searchQuery, () => {
           <td>{{ description }}</td>
           <td>
             <router-link :to="`/course/${id}`">View songs</router-link>
-            <v-btn block @click="submit" variant="elevated" color="indigo-accent-2">
+            <v-btn block @click="openUpdateCourseModal" variant="elevated" color="indigo-accent-2">
               Update
             </v-btn>
-            <v-btn block @click="submit" variant="elevated" color="indigo-accent-2">
+            <v-btn block @click="() => promptDeleteCourse(id)" variant="elevated" color="indigo-accent-2">
               Delete
             </v-btn>
           </td>

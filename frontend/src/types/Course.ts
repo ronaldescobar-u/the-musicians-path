@@ -1,7 +1,7 @@
-export default interface Song {
+export default interface Course {
   id: number;
   name: string;
-  artist: string;
+  description: string;
   genre: string;
   difficulty: number;
 }

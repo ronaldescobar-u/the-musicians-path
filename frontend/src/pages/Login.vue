@@ -9,9 +9,15 @@ const password = ref('');
 const passwordVisible = ref(false);
 const errorMessage = ref('');
 
-function submit() {
-  login(email.value, password.value);
-  router.push('/')
+async function submit() {
+  try {
+    const { accessToken, refreshToken } = await login(email.value, password.value);
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+    router.push('/');
+  } catch (error: any) {
+    errorMessage.value = error.message;
+  }
 }
 </script>
 <template>

@@ -44,7 +44,7 @@ async function submitRatingToCourse(id: number, rating: any) {
     .then(({ data }) => data);
 }
 
-async function enrollUserToCourse(id: number, rating: any) {
+async function enrollUserToCourse(id: number) {
   return axios
     .post(`${apiUrl}/courses${id}/users`, { name, description })
     .then(({ data }) => data);
