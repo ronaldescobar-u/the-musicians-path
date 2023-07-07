@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue';
 import { getCourses } from '../services/course.service';
 import { watch } from 'vue';
 import debounce from 'debounce';
-import { watchEffect } from 'vue';
 
 const courses = ref([]);
 const searchQuery = ref('');

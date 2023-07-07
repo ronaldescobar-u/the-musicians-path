@@ -17,10 +17,10 @@ function markAsCompleted() {
 </script>
 
 <template>
-  <div>
+  <div v-if="song">
     <h1>{{ song.name }}</h1>
-    <p>{{  song.artist }}</p>
-    <p>{{  song.genre }}</p>
+    <p>{{ song.artist }}</p>
+    <p>{{ song.genre }}</p>
     <v-btn block @click="submit" variant="elevated" color="indigo-accent-2">
       Add to my course
     </v-btn>
@@ -36,5 +36,8 @@ function markAsCompleted() {
         <div v-if="file.fileTypeId === 1">{{ file.content }}</div>
       </div>
     </div>
+  </div>
+  <div v-else>
+    Loading...
   </div>
 </template>

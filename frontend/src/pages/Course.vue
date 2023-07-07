@@ -17,9 +17,9 @@ function enroll() {
 </script>
 
 <template>
-  <div>
+  <div v-if="course">
     <h1>{{ course.name }}</h1>
-    <p>{{  course?.description }}</p>
+    <p>{{ course.description }}</p>
     <v-btn block @click="enroll" variant="elevated" color="indigo-accent-2">
       Enroll
     </v-btn>
@@ -61,5 +61,8 @@ function enroll() {
         </tr>
       </tbody>
     </v-table>
+  </div>
+  <div v-else>
+    Loading...
   </div>
 </template>

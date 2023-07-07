@@ -24,7 +24,9 @@ const routes: VueRouter.RouteRecordRaw[] = [
   { path: '/', component: Home },
   { path: '/song/:id', component: Song },
   {
-    path: '/explore', component: ExploreWrapper, children: [
+    path: '/explore',
+    component: ExploreWrapper,
+    children: [
       { path: 'courses', name: 'courses', component: ExploreCourses },
       { path: 'songs', name: 'songs', component: ExploreSongs }
     ]
@@ -41,6 +43,18 @@ const router = VueRouter.createRouter({
   history: VueRouter.createWebHistory(),
   routes
 });
+
+router.beforeEach(async (to, from) => {
+  if (
+    // make sure the user is authenticated
+    // !isAuthenticated &&
+    // ❗️ Avoid an infinite redirect
+    to.name !== 'Login'
+  ) {
+    // redirect the user to the login page
+    return { name: 'Login' }
+  }
+})
 
 const vuetify = createVuetify({
   components,
