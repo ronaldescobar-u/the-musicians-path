@@ -1,10 +1,8 @@
-import axios from 'axios';
-
-const apiUrl = import.meta.env.VITE_API_URL;
+import axios from '../utils/axios';
 
 async function getGenres() {
   return axios
-    .get(`${apiUrl}/genres`)
+    .get('/genres')
     .then(({ data }) => data);
 }
 

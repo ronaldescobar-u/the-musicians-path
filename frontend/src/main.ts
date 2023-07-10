@@ -1,10 +1,10 @@
 import '@mdi/font/css/materialdesignicons.css'
 import { createApp } from 'vue';
-import App from './App.vue';
 import 'vuetify/styles';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import App from './App.vue';
 import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
 import Home from './pages/Home.vue';
@@ -16,10 +16,10 @@ import CreatedByMeWrapper from './components/CreatedByMeWrapper.vue';
 import CoursesCreatedByMe from './pages/CoursesCreatedByMe.vue';
 import SongsCreatedByMe from './pages/SongsCreatedByMe.vue';
 import * as VueRouter from 'vue-router';
-import { mdi } from 'vuetify/iconsets/mdi'
+import { mdi } from 'vuetify/iconsets/mdi';
 
 const routes: VueRouter.RouteRecordRaw[] = [
-  { path: '/login', component: Login },
+  { path: '/login', name: 'Login', component: Login },
   { path: '/register', component: Register },
   { path: '/', component: Home },
   { path: '/song/:id', component: Song },
@@ -46,13 +46,10 @@ const router = VueRouter.createRouter({
 
 router.beforeEach(async (to, from) => {
   if (
-    // make sure the user is authenticated
     // !isAuthenticated &&
-    // ❗️ Avoid an infinite redirect
     to.name !== 'Login'
   ) {
-    // redirect the user to the login page
-    return { name: 'Login' }
+    return { name: 'Login' };
   }
 })
 
