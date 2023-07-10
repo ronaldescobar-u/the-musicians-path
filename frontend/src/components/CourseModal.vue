@@ -6,6 +6,7 @@ defineProps<{ isCreate: boolean, isOpen: boolean, close: () => void }>();
 
 const name = ref('');
 const description = ref('');
+const dialog = ref(false);
 
 function submit() {
   createCourse(name.value, description.value);
@@ -13,7 +14,7 @@ function submit() {
 }
 </script>
 <template>
-  <v-dialog v-model="isOpen">
+  <v-dialog v-model="dialog">
     <v-card class="mx-auto px-6 py-4" max-width="450">
       <v-card-title class="font-weight-bold">
         {{ isCreate ? 'Create' : 'Update' }} course

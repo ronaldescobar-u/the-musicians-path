@@ -12,6 +12,7 @@ const artistSelected = ref('');
 const genres = ref([]);
 const genreSelected = ref('');
 const difficulty = ref('');
+const dialog = ref(false);
 
 onMounted(async () => {
   Promise.all([getArtists(), getGenres()]).then(([artistsResponse, genresResponse]) => {
@@ -26,7 +27,7 @@ function submit() {
 }
 </script>
 <template>
-  <v-dialog v-model="isOpen">
+  <v-dialog v-model="dialog">
     <v-card class="mx-auto px-6 py-4" max-width="450">
       <v-card-title class="font-weight-bold">
         {{ isCreate ? 'Create' : 'Update' }} course
