@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { createUser } from '../services/user.service';
 import { useRouter } from 'vue-router';
+import tokenUtils from '../utils/token'
 
 const router = useRouter();
 const firstName = ref('');
@@ -13,12 +14,18 @@ const confirmPassword = ref('');
 const confirmPasswordVisible = ref(false);
 const errorMessage = ref('');
 
-function signUp() {
+async function signUp() {
   if (password.value !== confirmPassword.value) {
     errorMessage.value = 'Passwords do not match';
   }
-  createUser(firstName.value, lastName.value, email.value, password.value)
-  router.push('/');
+  try {
+    const { accessToken, refreshToken } = await createUser(firstName.value, lastName.value, email.value, password.value);
+    tokenUtils.saveTokens(accessToken, refreshToken);
+    store.setUser(null);
+    router.push('/');
+  } catch (error: any) {
+    errorMessage.value = error.message;
+  }  
 }
 </script>
 <template>
