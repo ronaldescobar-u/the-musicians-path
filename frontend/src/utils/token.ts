@@ -8,7 +8,7 @@ const getAccessToken = () => {
 };
 
 const getRefreshToken = () => {
-  return localStorage.getItem(REFRESH_TOKEN_KEY);
+  return localStorage.getItem(REFRESH_TOKEN_KEY) || '';
 };
 
 const getUserId = (): number => {
@@ -17,8 +17,8 @@ const getUserId = (): number => {
 };
 
 const saveTokens = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(accessToken));
-  localStorage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(refreshToken));
+  localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+  localStorage.setItem(ACCESS_TOKEN_KEY, refreshToken);
 };
 
 const removeTokens = () => {

@@ -4,6 +4,7 @@ import 'vuetify/styles';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import { createPinia } from 'pinia';
 import App from './App.vue';
 import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
@@ -17,6 +18,8 @@ import CoursesCreatedByMe from './pages/CoursesCreatedByMe.vue';
 import SongsCreatedByMe from './pages/SongsCreatedByMe.vue';
 import * as VueRouter from 'vue-router';
 import { mdi } from 'vuetify/iconsets/mdi';
+
+const pinia = createPinia();
 
 const routes: VueRouter.RouteRecordRaw[] = [
   { path: '/login', name: 'Login', component: Login },
@@ -44,14 +47,14 @@ const router = VueRouter.createRouter({
   routes
 });
 
-router.beforeEach(async (to, from) => {
-  if (
-    // !isAuthenticated &&
-    to.name !== 'Login'
-  ) {
-    return { name: 'Login' };
-  }
-})
+// router.beforeEach(async (to, from) => {
+//   if (
+//     !isAuthenticated &&
+//     to.name !== 'Login'
+//   ) {
+//     return { name: 'Login' };
+//   }
+// });
 
 const vuetify = createVuetify({
   components,
@@ -63,4 +66,4 @@ const vuetify = createVuetify({
   },
 });
 
-createApp(App).use(vuetify).use(router).mount('#app');
+createApp(App).use(pinia).use(vuetify).use(router).mount('#app');

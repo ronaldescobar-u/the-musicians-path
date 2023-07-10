@@ -3,9 +3,12 @@ import { ref, onMounted } from 'vue';
 import { getCourses, deleteCourse } from '../services/course.service';
 import { watch } from 'vue';
 import debounce from 'debounce';
+import CourseModal from '../components/CourseModal.vue';
 
 const courses = ref([]);
 const searchQuery = ref('');
+const isModalOpen = ref(false);
+const isCreate = ref(true);
 
 onMounted(async () => {
   courses.value = await getCourses(searchQuery.value);
@@ -16,11 +19,17 @@ const debouncedSearch = debounce(async () => {
 }, 1000);
 
 watch(searchQuery, () => {
-  debouncedSearch(searchQuery)
+  debouncedSearch();
 });
 
-function openUpdateCourseModal() {
+function openCreateCourseModal() {
+  isCreate.value = true;
+  isModalOpen.value = true;
+}
 
+function openUpdateCourseModal() {
+  isCreate.value = false;
+  isModalOpen.value = true;
 }
 
 function promptDeleteCourse(id: number) {
@@ -28,12 +37,16 @@ function promptDeleteCourse(id: number) {
     deleteCourse(id);
   }
 }
+
+function closeModal() {
+  isModalOpen.value = false;
+}
 </script>
 
 <template>
   <div>
     <v-text-field class="my-4" v-model="searchQuery" label="Search"></v-text-field>
-    <v-btn block @click="submit" variant="elevated" color="indigo-accent-2">
+    <v-btn block @click="openCreateCourseModal" variant="elevated" color="indigo-accent-2">
       Create course
     </v-btn>
     <v-table>
@@ -67,4 +80,5 @@ function promptDeleteCourse(id: number) {
       </tbody>
     </v-table>
   </div>
+  <CourseModal :isOpen="isModalOpen" :isCreate="isCreate" :close="closeModal" />
 </template>

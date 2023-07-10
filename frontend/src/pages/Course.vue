@@ -1,18 +1,32 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router'
+import { useRoute } from 'vue-router';
 import { enrollUserToCourse, getCourse } from '../services/course.service';
 import Course from '../types/Course';
+import CourseModal from '../components/CourseModal.vue';
 
-const route = useRoute()
+const route = useRoute();
 const course = ref<Course>();
+const isModalOpen = ref(false);
 
 onMounted(async () => {
   course.value = await getCourse(parseInt(route.params.id as string));
 });
 
 function enroll() {
-  enrollUserToCourse(course.id)
+  enrollUserToCourse((course.value as Course).id);
+}
+
+function promptExitCourse() {
+  exitCourse((course.value as Course).id);
+}
+
+function openEditCourseModal() {
+  isModalOpen.value = true;
+}
+
+function closeModal() {
+  isModalOpen.value = false;
 }
 </script>
 
@@ -23,10 +37,10 @@ function enroll() {
     <v-btn block @click="enroll" variant="elevated" color="indigo-accent-2">
       Enroll
     </v-btn>
-    <v-btn block @click="markAsCompleted()" variant="elevated" color="indigo-accent-2">
-      Mark as completed
+    <v-btn block @click="promptExitCourse" variant="elevated" color="indigo-accent-2">
+      Exit course
     </v-btn>
-    <v-btn block @click="submit" variant="elevated" color="indigo-accent-2">
+    <v-btn block @click="openEditCourseModal" variant="elevated" color="indigo-accent-2">
       Edit
     </v-btn>
     <v-table>
@@ -50,7 +64,7 @@ function enroll() {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="{ id, name, artist, genre, difficulty } in songs" :key="id">
+        <tr v-for="{ id, name, artist, genre, difficulty } in course.songs" :key="id">
           <td>{{ name }}</td>
           <td>{{ artist }}</td>
           <td>{{ genre }}</td>
@@ -65,4 +79,5 @@ function enroll() {
   <div v-else>
     Loading...
   </div>
+  <CourseModal :isOpen="isModalOpen" :isCreate="false" :close="closeModal" />
 </template>

@@ -2,8 +2,11 @@
 import { ref } from 'vue';
 import { login } from '../services/user.service';
 import { useRouter } from 'vue-router';
+import tokenUtils from '../utils/token'
+import useUserStore from '../stores/userStore';
 
 const router = useRouter();
+const store = useUserStore();
 const email = ref('');
 const password = ref('');
 const passwordVisible = ref(false);
@@ -12,8 +15,8 @@ const errorMessage = ref('');
 async function submit() {
   try {
     const { accessToken, refreshToken } = await login(email.value, password.value);
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
+    tokenUtils.saveTokens(accessToken, refreshToken);
+    store.setUser(null);
     router.push('/');
   } catch (error: any) {
     errorMessage.value = error.message;
